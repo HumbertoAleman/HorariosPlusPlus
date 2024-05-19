@@ -1,20 +1,51 @@
 import mongoose from "mongoose"
+import Section from "../../models/section.model.js"
 import Subject from "../../models/subject.model.js"
 
-export default async function newSubject(req, res) {
-  const subjectName = req?.query?.name
-  const subjectSections = req?.query?.nrcs
-  const subjectCareers = req?.query?.careerNames
+export default async function newSection(req, res) {
+  const sectionNrc = req?.query?.nrc
+  const sectionTeacher = req?.query?.teacher
+  const sessions = req?.query?.sessionsIds
+  const subjectName = req?.query?.subjectName
 
-  const subjectCount = await Subject.find().countDocuments() ?? 0
-  const newSubject = new Subject({
+  if (subjectName === undefined) {
+    console.error("ERROR : Subject name cannot be undefined when creating a section")
+    res?.send({ code: 0 })
+    return 0
+  } else if (await Subject.exists({ name: subjectName }).then(res => res === null)) {
+    console.error("ERROR : Cannot add section to a subject that doesn't exist")
+    res?.send({ code: 0 })
+    return 0
+  }
+
+  if (sectionNrc !== undefined) {
+    if (await Section.exists({ nrc: sectionNrc }).then(res => res !== null)) {
+      console.error("ERROR : Cannot add two sections with the same nrc")
+      res?.send({ code: 0 })
+      return 0
+    }
+  }
+
+  const sectionCount = await Section.find().countDocuments() ?? 0
+  const relatedSubject = await Subject.findOne({ name: subjectName })
+  const newSection = new Section({
     _id: new mongoose.mongo.ObjectId,
-    name: (subjectName || null) ?? ("New Subject " + subjectCount),
-    sections: subjectSections?.split(',') ?? [],
-    careers: subjectCareers?.split(',') ?? [],
+    nrc: sectionNrc ?? parseInt(sectionCount),
+    teacher: sectionTeacher ?? "Por Asignar",
+    sessions: sessions?.split(',') ?? [],
+    subject: new mongoose.mongo.ObjectId(relatedSubject._id)
   })
-  newSubject.save()
 
-  res?.send(newSubject)
-  return newSubject
+  const savedSection = await newSection.save()
+  if (savedSection !== newSection) {
+    console.error("ERROR : Unknown error when saving section")
+    res?.send({ code: 0 })
+    return 0
+  }
+
+  await Subject.findOneAndUpdate(relatedSubject,
+    { sections: relatedSubject.sections.concat(new mongoose.mongo.ObjectId(newSection._id)) })
+
+  res?.send(newSection)
+  return newSection
 }
