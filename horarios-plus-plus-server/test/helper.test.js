@@ -10,8 +10,12 @@ mongoose.connection
         console.warn('Error: ', error)
     })
 
-beforeEach(() => {
-    mongoose.connection.collections.subjects.drop((err) => {
-        console.log("Subjects dropped")
-    })
+beforeEach(async () => {
+    await mongoose.connection.collections.subjects.drop()
+    await mongoose.connection.collections.sections.drop()
+})
+
+after(() => {
+    mongoose.connection.collections.subjects.drop()
+    mongoose.connection.collections.sections.drop()
 })
