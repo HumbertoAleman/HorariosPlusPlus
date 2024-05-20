@@ -13,12 +13,16 @@ export default async function deleteSection(req, res) {
     }
   }
 
-  let deletedData = await Section.findOneAndDelete({ nrc: sectionNrc })
-  if (deletedData === undefined) {
+  const deletedData = await Section.findOneAndDelete({ nrc: sectionNrc })
+  if (deletedData === undefined || deletedData === null) {
     console.error("ERROR : An unexpected deletion error has occured")
     res?.send({ code: 0 })
     return 0
   }
+
+  const subjectToUpdate = await Subject.findById(deletedData.subject)
+  const updatedSubject = await Subject.findOneAndUpdate(subjectToUpdate,
+    { sections: subjectToUpdate.sections.filter(id => !id.equals(deletedData._id)) })
 
   res?.send(deletedData)
   return deletedData

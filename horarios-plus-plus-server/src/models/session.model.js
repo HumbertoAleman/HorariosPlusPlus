@@ -1,6 +1,6 @@
 import mongoose from "mongoose"
 
-const SessionSchema = new mongoose.Schema({
+const sessionSchema = new mongoose.Schema({
   _id : mongoose.Schema.Types.ObjectId,
   start: {
     minute: { type: Number, required: true },
@@ -14,5 +14,5 @@ const SessionSchema = new mongoose.Schema({
   section: { type: mongoose.Schema.Types.ObjectId, ref: "Section" }
 })
 
-const Session = mongoose.model(SessionSchema, "Session")
+const Session = mongoose.model("Session", sessionSchema)
 export default Session

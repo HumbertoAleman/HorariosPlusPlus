@@ -9,7 +9,7 @@ import newSection from "../src/routes/section/section.new_section.js"
 import deleteSubject from "../src/routes/subject/subject.delete_subject.js"
 import Section from "../src/models/section.model.js"
 
-describe("Subject CREATE", () => {
+describe("Subject CRUD", () => {
   describe("Create Subjects", () => {
 
     it("Create a new subject with no arguments", async () => {
