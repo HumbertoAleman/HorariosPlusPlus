@@ -9,12 +9,12 @@ import newSection from "../src/routes/section/section.new_section.js"
 import deleteSubject from "../src/routes/subject/subject.delete_subject.js"
 import Section from "../src/models/section.model.js"
 
-describe("Subject CREATE", () => {
+describe("Subject CRUD", () => {
   describe("Create Subjects", () => {
 
     it("Create a new subject with no arguments", async () => {
       await newSubject()
-      assert(Subject.exists({ name: "New Subject 0" }) !== null)
+      assert(await Subject.exists({ name: "New Subject 0" }).then(res => res !== null))
     })
 
     it("Create a new subject with no arguments, with subjects already in", async () => {
@@ -22,33 +22,34 @@ describe("Subject CREATE", () => {
       await newSubject()
       await newSubject()
       await newSubject()
-      assert(Subject.exists({ name: "New Subject 3" }) !== null)
+      assert(await Subject.exists({ name: "New Subject 3" }).then(res => res !== null))
     })
 
     it("Create new subject with name", async () => {
       await newSubject({ query: { name: "New Name" } })
-      assert(Subject.exists({ name: "New Name" }) !== null)
+      assert(await Subject.exists({ name: "New Name" }).then(res => res !== null))
     })
 
     it("Throw when adding subjects with duplicate names", async () => {
       await newSubject({ query: { name: "Dupe Name" } })
-      assert(await newSubject({ query: { name: "Dupe Name" } }) === 0)
+      assert(await newSubject({ query: { name: "Dupe Name" } }).then(res => res === 0))
     })
   })
 
   describe("Delete Subjects", () => {
     let toDelete
-    let toDeleteSection
     beforeEach(async () => {
       toDelete = await newSubject({ query: { name: "to delete" } })
     })
 
     it("Delete subject by Name", async () => {
-      assert(await deleteSubject({
+      await deleteSubject({
         query: {
           name: toDelete.name,
         }
-      }).then(res => res._id.equals(toDelete._id)))
+      })
+
+      assert(await Section.exists({ name: toDelete.name }).then(res => res === null))
     })
 
     it("Throw when deleting a name that doesnt exist", async () => {

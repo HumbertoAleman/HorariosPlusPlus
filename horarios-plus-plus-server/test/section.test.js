@@ -8,9 +8,8 @@ import assert from "assert"
 import mongoose from "mongoose"
 import Subject from "../src/models/subject.model.js"
 
-let subject
-
 describe("Section CRUD", () => {
+  let subject
   beforeEach(async () => {
     subject = await newSubject({ query: { name: "Subject" } });
   })
@@ -117,6 +116,14 @@ describe("Section CRUD", () => {
           nrc: 1,
         }
       }) === 0)
+    })
+
+    it("Delete section and ensure that its removed from subject", async () => {
+      await deleteSection({
+        query: { nrc: 0, }
+      })
+
+      assert(await Subject.findById(subject._id).then(res => !res.sections.some(id => id.equals(toDelete._id))))
     })
   })
 })

@@ -44,8 +44,8 @@ export default async function newSection(req, res) {
   }
 
   await Subject.findOneAndUpdate(relatedSubject,
-    { sections: relatedSubject.sections.concat(new mongoose.mongo.ObjectId(newSection._id)) })
+    { sections: relatedSubject.sections.concat(new mongoose.mongo.ObjectId(savedSection._id)) })
 
-  res?.send(newSection)
-  return newSection
+  res?.send(savedSection)
+  return savedSection
 }
