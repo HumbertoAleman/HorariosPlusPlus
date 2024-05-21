@@ -15,8 +15,7 @@ describe("Subject CRUD", () => {
 	describe("Create Subjects", () => {
 
 		it("Create a new subject with no arguments", async () => {
-			await newSubject()
-			assert(await Subject.exists({ name: "New Subject 0" }).then(res => res !== null))
+			assert(await newSubject().then(res => res.name === "New Subject 0"))
 		})
 
 		it("Create a new subject with no arguments, with subjects already in", async () => {
@@ -24,7 +23,7 @@ describe("Subject CRUD", () => {
 			await newSubject()
 			await newSubject()
 			await newSubject()
-			assert(await Subject.exists({ name: "New Subject 3" }).then(res => res !== null))
+			assert(await newSubject().then(res => res.name === "New Subject 4"))
 		})
 
 		it("Create new subject with name", async () => {
@@ -42,23 +41,22 @@ describe("Subject CRUD", () => {
 	// NOTE: READ SUBJECTS
 	describe("Read Subjects", () => {
 		it("Get Subject by Name", async () => {
-			await newSubject({ query: { name: "New Subject 1" }})
+			await newSubject({ query: { name: "New Subject 1" } })
 			assert(await getSubject({ query: { name: "New Subject 1" } })
 				.then(res => res.name === "New Subject 1"))
 		})
 
 		it("Get all subjects", async () => {
-			await newSubject({ query: { name: "New Subject 1" }})
-			await newSubject({ query: { name: "New Subject 2" }})
-			await newSubject({ query: { name: "New Subject 3" }})
+			await newSubject({ query: { name: "New Subject 1" } })
+			await newSubject({ query: { name: "New Subject 2" } })
+			await newSubject({ query: { name: "New Subject 3" } })
 			assert(await getSubjects()
-			.then(res => res.every(subject => subject.name.startsWith("New Subject")))
+				.then(res => res.every(subject => subject.name.startsWith("New Subject")))
 			)
 		})
 
 		it("Throw if subject does not exist", async () => {
 			assert(await getSubject({ query: { name: "A subject" } })
-				.then(res => { console.log(res); return res; })
 				.then(res => res.message === "ERROR subject with name A subject was not found"))
 		})
 
@@ -75,7 +73,7 @@ describe("Subject CRUD", () => {
 			toDelete = await newSubject({ query: { name: "to delete" } })
 		})
 
-		it("Delete subject by Name", async () => {
+		it("Delete subject by Name", async () => {deleteSubject
 			await deleteSubject({
 				query: {
 					name: toDelete.name,
@@ -83,6 +81,11 @@ describe("Subject CRUD", () => {
 			})
 
 			assert(await Section.exists({ name: toDelete.name }).then(res => res === null))
+		})
+
+		it("Throw if name is undefined", async () => {
+			assert(await deleteSubject({ query: { name: undefined } })
+				.then(res => res.message === "ERROR subjectName is undefined"))
 		})
 
 		it("Throw when deleting a name that doesnt exist", async () => {
