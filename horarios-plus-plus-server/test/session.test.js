@@ -10,6 +10,7 @@ import newSection from "../src/routes/section/section.new_section.js"
 import Section from "../src/models/section.model.js";
 import Subject from "../src/models/subject.model.js";
 import getSessions from "../src/routes/session/session.get_sessions.js"
+import updateSession from "../src/routes/session/session.update_session.js"
 
 describe("Session CRUD", () => {
 	let subject
@@ -151,6 +152,7 @@ describe("Session CRUD", () => {
 		})
 	})
 
+	// NOTE: READ SESSIONS
 	describe("Read Sessions", () => {
 		let toRead
 		beforeEach(async () => {
@@ -179,6 +181,190 @@ describe("Session CRUD", () => {
 		it("Throw if NRC is not found", async () => {
 			assert(await getSessions({ query: { nrc: "999" }})
 			.then(res => res.message === "ERROR section does not exist" ))
+		})
+	})
+
+	// NOTE: UPDATE SESSIONS
+	describe("Update Sessions", () => {
+		let toUpdate
+		beforeEach(async () => {
+			toUpdate = await newSession({
+				query: {
+					day: 1,
+					startMinute: 15,
+					startHour: 6,
+					endMinute: 45,
+					endHour: 8,
+					nrc: section.nrc,
+				}
+			})
+		})
+
+		it("Update session day", async () => {
+			const newDay = 2
+			assert(await updateSession({ query: {
+				oldDay: toUpdate.day,
+				oldEndMinute: toUpdate.end.minute,
+				oldEndHour: toUpdate.end.hour,
+				oldStartMinute: toUpdate.start.minute,
+				oldStartHour: toUpdate.start.hour,
+				nrc: section.nrc,
+				newDay: newDay
+			}}).then(res => res._id.equals(toUpdate._id) && res.day === newDay))
+		})
+
+		it("Update start minutes", async () => {
+			const newStartMinutes = 30
+			assert(await updateSession({ query: {
+				oldDay: toUpdate.day,
+				oldEndMinute: toUpdate.end.minute,
+				oldEndHour: toUpdate.end.hour,
+				oldStartMinute: toUpdate.start.minute,
+				oldStartHour: toUpdate.start.hour,
+				nrc: section.nrc,
+				newStartMinute: newStartMinutes
+			}}).then(res => res._id.equals(toUpdate._id) && res.start.minute === newStartMinutes))
+		})
+
+		it("Update start hour", async () => {
+			const newStartHours = 7
+			assert(await updateSession({ query: {
+				oldDay: toUpdate.day,
+				oldEndMinute: toUpdate.end.minute,
+				oldEndHour: toUpdate.end.hour,
+				oldStartMinute: toUpdate.start.minute,
+				oldStartHour: toUpdate.start.hour,
+				nrc: section.nrc,
+				newStartHour: newStartHours
+			}}).then(res => res._id.equals(toUpdate._id) && res.start.hour === newStartHours))
+		})
+
+		it("Update end minutes", async () => {
+			const newEndMinutes = 30
+			assert(await updateSession({ query: {
+				oldDay: toUpdate.day,
+				oldEndMinute: toUpdate.end.minute,
+				oldEndHour: toUpdate.end.hour,
+				oldStartMinute: toUpdate.start.minute,
+				oldStartHour: toUpdate.start.hour,
+				nrc: section.nrc,
+				newEndMinute: newEndMinutes
+			}}).then(res => res._id.equals(toUpdate._id) && res.end.minute === newEndMinutes))
+		})
+
+		it("Update end hour", async () => {
+			const newEndHour = 7
+			assert(await updateSession({ query: {
+				oldDay: toUpdate.day,
+				oldEndMinute: toUpdate.end.minute,
+				oldEndHour: toUpdate.end.hour,
+				oldStartMinute: toUpdate.start.minute,
+				oldStartHour: toUpdate.start.hour,
+				nrc: section.nrc,
+				newEndHour: newEndHour
+			}}).then(res => res._id.equals(toUpdate._id) && res.end.hour === newEndHour))
+		})
+
+		it("Throw if new start is ahead of old end", async () => {
+			assert(await updateSession({ query: {
+				oldDay: toUpdate.day,
+				oldEndMinute: toUpdate.end.minute,
+				oldEndHour: toUpdate.end.hour,
+				oldStartMinute: toUpdate.start.minute,
+				oldStartHour: toUpdate.start.hour,
+				nrc: section.nrc,
+				newStartHour: 10,
+				newStartMinute: 0
+			}}).then(res => res.message === "ERROR start cannot be equal to/before end"))
+		})
+
+		it("Throw if new end is behind of old start", async () => {
+			assert(await updateSession({ query: {
+				oldDay: toUpdate.day,
+				oldEndMinute: toUpdate.end.minute,
+				oldEndHour: toUpdate.end.hour,
+				oldStartMinute: toUpdate.start.minute,
+				oldStartHour: toUpdate.start.hour,
+				nrc: section.nrc,
+				newEndHour: 6,
+				newEndMinute: 0
+			}}).then(res => res.message === "ERROR start cannot be equal to/before end"))
+		})
+
+		it("Throw if oldDay is undefined", async () => {
+			assert(await updateSession({ query: {
+				oldEndMinute: toUpdate.end.minute,
+				oldEndHour: toUpdate.end.hour,
+				oldStartMinute: toUpdate.start.minute,
+				oldStartHour: toUpdate.start.hour,
+				nrc: section.nrc,
+			}}).then(res => res.message === "ERROR oldSessionDay is undefined"))
+		})
+
+
+		it("Throw if oldSessionStart is undefined", async () => {
+			assert(await updateSession({ query: {
+				oldDay: toUpdate.day,
+				oldEndMinute: toUpdate.end.minute,
+				oldEndHour: toUpdate.end.hour,
+				nrc: section.nrc,
+			}}).then(res => res.message === "ERROR oldSessionStart is undefined"))
+		})
+
+		it("Throw if oldSessionEnd is undefined", async () => {
+			assert(await updateSession({ query: {
+				oldDay: toUpdate.day,
+				oldStartMinute: toUpdate.start.minute,
+				oldStartHour: toUpdate.start.hour,
+				nrc: section.nrc,
+			}}).then(res => res.message === "ERROR oldSessionEnd is undefined"))
+		})
+
+		it("Throw if nrc is undefined", async () => {
+			assert(await updateSession({ query: {
+				oldDay: toUpdate.day,
+				oldEndMinute: toUpdate.end.minute,
+				oldEndHour: toUpdate.end.hour,
+				oldStartMinute: toUpdate.start.minute,
+				oldStartHour: toUpdate.start.hour,
+			}}).then(res => res.message === "ERROR sectionNrc is undefined"))
+		})
+
+		it("Throw if nrc is not found", async () => {
+			assert(await updateSession({ query: {
+				oldDay: toUpdate.day,
+				oldEndMinute: toUpdate.end.minute,
+				oldEndHour: toUpdate.end.hour,
+				oldStartMinute: toUpdate.start.minute,
+				oldStartHour: toUpdate.start.hour,
+				nrc: "48"
+			}}).then(res => res.message === "ERROR NRC 48 does not exist"))
+		})
+
+		it("Throw session collides with another session", async () => {
+			await newSession({
+				query: {
+					day: 1,
+					startHour: 9,
+					startMinute: 0,
+					endHour: 10,
+					endMinute: 0,
+					nrc: section.nrc,
+				}
+			})
+
+			assert(await updateSession({ query: {
+				oldDay: toUpdate.day,
+				oldEndMinute: toUpdate.end.minute,
+				oldEndHour: toUpdate.end.hour,
+				oldStartMinute: toUpdate.start.minute,
+				oldStartHour: toUpdate.start.hour,
+				nrc: section.nrc,
+				newEndHour: 10,
+				newEndMinute: 45,
+				newStartHour: 9,
+				newStartMinute: 45,
+			}}).then(res => res.message === "ERROR sessions collide"))
 		})
 	})
 
