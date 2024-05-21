@@ -1,6 +1,8 @@
 import newSection from "../src/routes/section/section.new_section.js"
 import newSubject from "../src/routes/subject/subject.new_subject.js"
 import deleteSection from "../src/routes/section/section.delete_section.js"
+import getSection from "../src/routes/section/section.get_section.js"
+import getSections from "../src/routes/section/section.get_sections.js"
 
 import Section from "../src/models/section.model.js"
 import assert from "assert"
@@ -14,6 +16,7 @@ describe("Section CRUD", () => {
 		subject = await newSubject({ query: { name: "Subject" } });
 	})
 
+	// NOTE: CREATE SECTIONS
 	describe("Create Sections", () => {
 		it("Create a new section with no arguments", async () => {
 			await newSection({
@@ -97,6 +100,47 @@ describe("Section CRUD", () => {
 		})
 	})
 
+	// NOTE: READ SECTIONS
+	describe("Read Sections", () => {
+		let toRead
+		beforeEach(async () => {
+			toRead = await newSection({ query: { nrc: "1", subjectName: subject.name } })
+		})
+
+		it("Get section using nrc", async () => {
+			assert(await getSection({ query: { nrc: toRead.nrc } })
+				.then(res => res.nrc === toRead.nrc))
+		})
+
+		it("Throw when nrc is undefined", async () => {
+			assert(await getSection({ query: { nrc: undefined } })
+				.then(res => res.message === "ERROR sectionNRC is undefined"))
+		})
+
+		it("Throw when nrc is not found", async () => {
+			assert(await getSection({ query: { nrc: "32" } })
+				.then(res => res.message === "ERROR section with nrc 32 was not found"))
+		})
+
+		it("Get sections from a subject", async () => {
+			await newSection({ query: { nrc: "2", subjectName: subject.name } })
+			await newSection({ query: { nrc: "3", subjectName: subject.name } })
+			assert(await getSections({ query: { subjectName: subject.name } })
+				.then(res => res.every(section => ["1","2","3"].includes(section.nrc)) ))
+		})
+
+		it("Throw when subjectName is undefined", async () => {
+			assert(await getSections({ query: { subjectName: undefined } })
+				.then(res => res.message === "ERROR subjectName is undefined"))
+		})
+
+		it("Throw when subject is not found", async () => {
+			assert(await getSections({ query: { subjectName: "MATERIA DOS" } })
+				.then(res => res.message === "ERROR subject does not exist"))
+		})
+	})
+
+	// NOTE: DELETE SECTIONS
 	describe("Delete Sections", () => {
 		let toDelete
 		beforeEach(async () => {
