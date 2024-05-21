@@ -9,6 +9,7 @@ import newSection from "../src/routes/section/section.new_section.js"
 
 import Section from "../src/models/section.model.js";
 import Subject from "../src/models/subject.model.js";
+import getSessions from "../src/routes/session/session.get_sessions.js"
 
 describe("Session CRUD", () => {
 	let subject
@@ -19,6 +20,7 @@ describe("Session CRUD", () => {
 		section = await newSection({ query: { subjectName: subject.name } })
 	})
 
+	// NOTE: CREATE SESSIONS
 	describe("Create Sessions", () => {
 		it("Create Basic Session", async () => {
 			assert(await newSession({
@@ -136,6 +138,38 @@ describe("Session CRUD", () => {
 		})
 	})
 
+	describe("Read Sessions", () => {
+		let toRead
+		beforeEach(async () => {
+			toRead = await newSession({
+				query: {
+					day: 1,
+					startMinute: 15,
+					startHour: 6,
+					endMinute: 45,
+					endHour: 6,
+					nrc: section.nrc,
+				}
+			})
+		})
+
+		it("Get session from nrc", async () => {
+			assert(await getSessions({ query: { nrc: section.nrc }})
+			.then(res => res.at(0).equals(toRead)))
+		})
+
+		it("Throw if NRC is undefined", async () => {
+			assert(await getSessions({ query: { nrc: undefined }})
+			.then(res => res.message === "ERROR sectionNRC is undefined" ))
+		})
+
+		it("Throw if NRC is not found", async () => {
+			assert(await getSessions({ query: { nrc: "999" }})
+			.then(res => res.message === "ERROR section does not exist" ))
+		})
+	})
+
+	// NOTE: DELETE SESSIONS
 	describe("Delete Sessions", () => {
 		let toDelete
 		beforeEach(async () => {
