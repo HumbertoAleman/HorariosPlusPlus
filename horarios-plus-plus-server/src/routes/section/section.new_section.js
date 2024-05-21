@@ -9,20 +9,17 @@ export default async function newSection(req, res) {
   const subjectName = req?.query?.subjectName
 
   if (subjectName === undefined) {
-    console.error("ERROR : Subject name cannot be undefined when creating a section")
-    res?.send({ code: 0 })
-    return 0
+    res?.send({ message: "ERROR Subject name is undefined", code: 0 })
+    return { message: "ERROR Subject name is undefined", code: 0 }
   } else if (await Subject.exists({ name: subjectName }).then(res => res === null)) {
-    console.error("ERROR : Cannot add section to a subject that doesn't exist")
-    res?.send({ code: 0 })
-    return 0
+    res?.send({ message: "ERROR Subject does not exist", code: 0 })
+    return { message: "ERROR Subject does not exist", code: 0 }
   }
 
   if (sectionNrc !== undefined) {
     if (await Section.exists({ nrc: sectionNrc }).then(res => res !== null)) {
-      console.error("ERROR : Cannot add two sections with the same nrc")
-      res?.send({ code: 0 })
-      return 0
+      res?.send({ message: "ERROR Duplicate NRC", code: 0 })
+      return { message: "ERROR Duplicate NRC", code: 0 }
     }
   }
 
@@ -38,9 +35,8 @@ export default async function newSection(req, res) {
 
   const savedSection = await newSection.save()
   if (savedSection !== newSection) {
-    console.error("ERROR : Unknown error when saving section")
-    res?.send({ code: 0 })
-    return 0
+    res?.send({ message: "ERROR an unknown error has ocurred", code: 0 })
+    return { message: "ERROR an unknown error has ocurred", code: 0 }
   }
 
   await Subject.findOneAndUpdate(relatedSubject,

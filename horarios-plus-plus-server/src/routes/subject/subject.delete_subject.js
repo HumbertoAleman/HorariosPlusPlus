@@ -8,26 +8,21 @@ export default async function deleteSubject(req, res) {
 
   if (subjectName !== undefined) {
     if (await Subject.exists({ name: subjectName }) === null) {
-      console.error("ERROR : Subject does not exist, could not delete subject")
-      res?.send({ code: 0 })
-      return 0
+      res?.send({ message: "ERROR subject does not exist", code: 0 })
+			return { message: "ERROR subject does not exist", code: 0 }
     }
   }
 
   const deletedData = await Subject.findOneAndDelete({ name: subjectName })
   if (deletedData === undefined) {
-    console.error("ERROR : An unexpected deletion error has occured")
-    res?.send({ code: 0 })
-    return 0
+		// This error should never happen
+    res?.send({ message: "ERROR an unexpected error has occured", code: 0 })
+    return { message: "ERROR an unexpected error has occured", code: 0 }
   }
 
   for (const sectionId of deletedData.sections){
     const nrc = await Section.findByIdAndDelete(sectionId).then(res => res.nrc)
-    await deleteSection({
-      query: {
-        nrc: nrc
-      }
-    })
+    await deleteSection({ query: { nrc: nrc } })
   }
 
   res?.send(deletedData)

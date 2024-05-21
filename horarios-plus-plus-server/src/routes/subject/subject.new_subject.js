@@ -6,10 +6,9 @@ export default async function newSubject(req, res) {
   const subjectCareers = req?.query?.careerNames
 
   if (subjectName !== undefined) {
-    if (await Subject.exists({ name: subjectName }) !== null) {
-      console.error("ERROR: Cannot add two subjects with the same name")
-      res?.send({ code: 0 })
-      return 0
+    if (await Subject.exists({ name: subjectName }).then(res => res !== null)) {
+      res?.send({ message: "ERROR cannot add duplicate names", code: 0 })
+      return { message: "ERROR cannot add duplicate names", code: 0 }
     }
   }
 
@@ -23,9 +22,9 @@ export default async function newSubject(req, res) {
 
   const savedSubject = await newSubject.save()
   if (savedSubject !== newSubject) {
-    console.error("ERROR : Unknown error when saving section")
-    res?.send({ code: 0 })
-    return 0
+		// This error should never occur
+    res?.send({ message: "ERROR saving section", code: 0 })
+    return { message: "ERROR saving section", code: 0 }
   }
 
   res?.send(newSubject)
