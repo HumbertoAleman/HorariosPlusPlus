@@ -136,6 +136,19 @@ describe("Session CRUD", () => {
 				}
 			}).then(res => res.message === "ERROR sessions collide"))
 		})
+
+		it("Throw start hour is after end hour", async () => {
+			assert(await newSession({
+				query: {
+					day: 1,
+					startMinute: 30,
+					startHour: 7,
+					endMinute: 15,
+					endHour: 6,
+					nrc: section.nrc,
+				}
+			}).then(res => res.message === "ERROR start cannot be equal to/before end"))
+		})
 	})
 
 	describe("Read Sessions", () => {

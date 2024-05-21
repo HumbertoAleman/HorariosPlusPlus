@@ -37,6 +37,11 @@ export default async function newSession(req, res) {
 		return { message: "ERROR sessionEnd is undefined", code: 0 }
 	}
 
+	if (sessionStart.hour * 60 + sessionStart.minute >= sessionEnd.hour * 60 + sessionEnd.minute) {
+		res?.send({ message: "ERROR start cannot be equal to/before end", code: 0 })
+		return { message: "ERROR start cannot be equal to/before end", code: 0 }
+	}
+
 	if (sessionDay === undefined) {
 		res?.send({ message: "ERROR sessionDay is undefined", code: 0 })
 		return { message: "ERROR sessionDay is undefined", code: 0 }
