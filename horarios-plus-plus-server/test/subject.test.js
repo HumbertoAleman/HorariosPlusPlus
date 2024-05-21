@@ -9,6 +9,7 @@ import deleteSubject from "../src/routes/subject/subject.delete_subject.js"
 import Section from "../src/models/section.model.js"
 import getSubjects from "../src/routes/subject/subject.get_subjects.js"
 import getSubject from "../src/routes/subject/subject.get_subject.js"
+import updateSubject from "../src/routes/subject/subject.update_subject.js"
 
 describe("Subject CRUD", () => {
 	// NOTE: CREATE SUBJECTS 
@@ -63,6 +64,38 @@ describe("Subject CRUD", () => {
 		it("Throw if subjectName is undefined", async () => {
 			assert(await getSubject({ query: { name: undefined } })
 				.then(res => res.message === "ERROR subjectName is undefined"))
+		})
+	})
+
+	// NOTE: UPDATE SUBJECTS
+	describe("Update Subjects", () => { 
+		let toUpdate
+		beforeEach(async () => {
+			toUpdate = await newSubject({ query: { name: "to update" } })
+		})
+
+		it("Update name of subject", async () => {
+			assert(await updateSubject({
+				query: { oldName: toUpdate.name, newName: "updated" }
+			}).then(res => res._id.equals(toUpdate._id) && res.name === "updated"))
+		})
+
+		it("Throw when oldName is undefined", async () => {
+			assert(await updateSubject({
+				query: { oldName: undefined, newName: "updated" }
+			}).then(res => res.message === "ERROR oldName is undefined"))
+		})
+
+		it("Throw when newName is undefined", async () => {
+			assert(await updateSubject({
+				query: { oldName: toUpdate.name, newName: undefined }
+			}).then(res => res.message === "ERROR newName is undefined"))
+		})
+
+		it("Throw when subject is not found", async () => {
+			assert(await updateSubject({
+				query: { oldName: "fail", newName: "updated" }
+			}).then(res => res.message === "ERROR subject with name fail was not found"))
 		})
 	})
 
