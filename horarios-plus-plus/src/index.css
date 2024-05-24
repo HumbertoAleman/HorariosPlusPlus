@@ -1,13 +1,44 @@
-body {
-  margin: 0;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+/* ANCHOR FONTS */
+@font-face {
+  font-family: 'MotivaSans';
+  src: url('./resources/fonts/MotivaSansRegular.woff.woff') format('woff'),
+       url('./resources/fonts/MotivaSansRegular.woff.ttf') format('truetype');
 }
 
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+@font-face {
+  font-family: 'MotivaSans-Bold';
+  src: url('./resources/fonts/MotivaSansBold.woff.woff') format('woff'),
+       url('./resources/fonts/MotivaSansBold.woff.ttf') format('truetype');
+}
+
+
+:root {
+  --text-color: #E0E0E0;
+  --background-dark-color: #052F5F;
+  --background-light-color: #3498db;
+  --button-background-color: #04AA6D;
+  --button-background-light-color: #05BA7D;
+}
+
+
+body {
+  margin: unset;
+  padding: unset;
+  border: unset;
+  font-family: "MotivaSans";
+}
+
+/* ANCHOR FLEX VARIABLES */
+.flex-horizontal {
+  display: flex;
+  flex-direction: row;
+}
+
+.flex-vertical {
+  display: flex;
+  flex-direction: column;
+}
+
+.flex-center {
+  align-items: center;
 }

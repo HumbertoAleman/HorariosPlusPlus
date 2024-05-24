@@ -1,0 +1,14 @@
+.navbar-container {
+  background: var(--background-light-color);
+  position: absolute;
+  top: 0;
+
+  display: flex;
+  flex-flow: row nowrap;
+
+  align-items: center;
+  justify-content: stretch;
+  justify-items: stretch;
+
+  height: var(--navbar-size);
+}
