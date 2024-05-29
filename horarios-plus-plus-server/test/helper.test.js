@@ -13,9 +13,13 @@ mongoose.connection
 beforeEach(async () => {
     await mongoose.connection.collections.subjects.drop()
     await mongoose.connection.collections.sections.drop()
+    await mongoose.connection.collections.sessions.drop()
+    await mongoose.connection.collections.events.drop()
 })
 
 after(() => {
     mongoose.connection.collections.subjects.drop()
     mongoose.connection.collections.sections.drop()
+    mongoose.connection.collections.sessions.drop()
+    mongoose.connection.collections.events.drop()
 })
