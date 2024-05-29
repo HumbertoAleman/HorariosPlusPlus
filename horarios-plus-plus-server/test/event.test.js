@@ -1,5 +1,6 @@
 import assert from "assert"
 import newEvent from "../src/routes/event/event.new_event.js"
+import getEvents from "../src/routes/event/event.get_events.js"
 
 describe("Events CRUD", () => {
 	// NOTE: CREATE EVENTS
@@ -92,7 +93,41 @@ describe("Events CRUD", () => {
 
 	// NOTE: READ EVENTS
 	describe("Read Events", () => {
+		let toRead
+		let toReadDifferent
+		beforeEach(async () => {
+			toRead = await newEvent({
+				query: {
+					day: 1,
+					startHour: 6,
+					startMinute: 0,
+					endHour: 7,
+					endMinute: 30,
+				}
+			})
+			toReadDifferent = await newEvent({
+				query: {
+					day: 2,
+					startHour: 6,
+					startMinute: 0,
+					endHour: 7,
+					endMinute: 30,
+				}
+			})
+		})
 
+		it("Read event from database", async () => {
+			assert(await getEvents()
+				.then(res => [toRead, toReadDifferent]
+					.every(toread => res.some(fromDb => fromDb._id.equals(toread._id)))
+				))
+		})
+
+		it("Read read event with specific day", async () => {
+			assert(await getEvents({ query: { day: 1 } })
+				.then(res => res.some(event => event._id.equals(toRead._id)) && !res.some(event => event._id.equals(toReadDifferent._id))
+				))
+		})
 	})
 
 	// NOTE: UPDATE EVENTS
