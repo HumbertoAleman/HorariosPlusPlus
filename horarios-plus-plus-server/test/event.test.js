@@ -2,6 +2,7 @@ import assert from "assert"
 import newEvent from "../src/routes/event/event.new_event.js"
 import getEvents from "../src/routes/event/event.get_events.js"
 import updateEvent from "../src/routes/event/event.update_event.js"
+import deleteEvent from "../src/routes/event/event.delete_event.js"
 
 describe("Events CRUD", () => {
 	// NOTE: CREATE EVENTS
@@ -284,6 +285,98 @@ describe("Events CRUD", () => {
 
 	// NOTE: DELETE EVENTS
 	describe("Delete Events", () => {
+		let toDelete
+		beforeEach(async () => {
+			toDelete = await newEvent({
+				query: {
+					day: 1,
+					startHour: 6,
+					startMinute: 0,
+					endHour: 7,
+					endMinute: 30,
+				}
+			})
+		})
 
+		it("Delete event", () => {
+			assert(deleteEvent({
+				query: {
+					day: 1,
+					startHour: 6,
+					startMinute: 0,
+					endHour: 7,
+					endMinute: 30,
+				}
+			}).then(async res => await Event.findById(res._id))
+				.then(res => res === undefined || res === null))
+		})
+
+		it("Throw when day is missing", async () => {
+			assert(await deleteEvent({
+				query: {
+					day: 3,
+					startMinute: toDelete.start.minute,
+					startHour: toDelete.start.hour,
+					endMinute: toDelete.end.minute,
+					endHour: toDelete.end.hour,
+				}
+			}).then(res => res.message === "ERROR could not find event to delete"))
+		})
+
+		it("Throw when day is missing", async () => {
+			assert(await deleteEvent({
+				query: {
+					startMinute: toDelete.start.minute,
+					startHour: toDelete.start.hour,
+					endMinute: toDelete.end.minute,
+					endHour: toDelete.end.hour,
+				}
+			}).then(res => res.message === "ERROR eventDay is undefined"))
+		})
+
+		it("Throw when start time is missing", async () => {
+			assert(await deleteEvent({
+				query: {
+					day: toDelete.day,
+					startMinute: 10,
+					startHour: 10,
+					endMinute: toDelete.end.minute,
+					endHour: toDelete.end.hour,
+				}
+			}).then(res => res.message === "ERROR could not find event to delete"))
+		})
+
+		it("Throw when start time is missing", async () => {
+			assert(await deleteEvent({
+				query: {
+					day: toDelete.day,
+					endMinute: toDelete.end.minute,
+					endHour: toDelete.end.hour,
+				}
+			}).then(res => res.message === "ERROR eventStart is undefined"))
+		})
+
+
+		it("Throw when end time is wrong", async () => {
+			assert(await deleteEvent({
+				query: {
+					day: toDelete.day,
+					startMinute: toDelete.start.minute,
+					startHour: toDelete.start.hour,
+					endMinute: 10,
+					endHour: 10,
+				}
+			}).then(res => res.message === "ERROR could not find event to delete"))
+		})
+
+		it("Throw when end time is missing", async () => {
+			assert(await deleteEvent({
+				query: {
+					day: toDelete.day,
+					startMinute: toDelete.start.minute,
+					startHour: toDelete.start.hour,
+				}
+			}).then(res => res.message === "ERROR eventEnd is undefined"))
+		})
 	})
 })
