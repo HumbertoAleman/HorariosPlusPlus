@@ -8,7 +8,8 @@ import newSubject from "../src/routes/subject/subject.new_subject.js"
 import newSection from "../src/routes/section/section.new_section.js"
 
 import Section from "../src/models/section.model.js";
-import Subject from "../src/models/subject.model.js";
+import Session from "../src/models/session.model.js"
+
 import getSessions from "../src/routes/session/session.get_sessions.js"
 import updateSession from "../src/routes/session/session.update_session.js"
 
@@ -394,7 +395,8 @@ describe("Session CRUD", () => {
 					endHour: toDelete.end.hour,
 					nrc: section.nrc
 				}
-			}).then(res => res._id.equals(toDelete._id)))
+			}).then(async res => await Session.findById(res._id))
+				.then(res => res === undefined || res === null))
 		})
 
 		it("Delete session and ensure that session is eliminated from section", async () => {
