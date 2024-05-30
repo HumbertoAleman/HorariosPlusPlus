@@ -2,6 +2,7 @@ import mongoose from "mongoose"
 
 import Section from "../../models/section.model.js"
 import Session from "../../models/session.model.js"
+import Schedule from "../../models/schedule.model.js"
 
 export default async function deleteSession(req, res) {
   const sessionDay = req?.query?.day
@@ -53,7 +54,10 @@ export default async function deleteSession(req, res) {
   }
   
   const updatedSection = await Section.findOneAndUpdate(sectionToUpdate,
-    { sessions: sectionToUpdate.sessions.filter(id => !id.equals(deletedData._id)) })
+    { sessions: sectionToUpdate.sessions.filter(id => !id.equals(deletedData._id)) }, { new: true })
+	
+	// We want to remove all of the schedules that contain the modified section
+	const schedulesToDelete = await Schedule.deleteMany({ sections: new mongoose.mongo.ObjectId(deletedData.section) })
 
   res?.send(deletedData)
   return deletedData

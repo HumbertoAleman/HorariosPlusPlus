@@ -1,8 +1,16 @@
+import mongoose from "mongoose"
 import assert from "assert"
 import newSubject from "../src/routes/subject/subject.new_subject.js"
-import newSchedule from "../src/routes/schedule/schedule.new_schedule.js"
+import generateSchedules from "../src/routes/schedule/schedule.new_schedule.js"
 import newSection from "../src/routes/section/section.new_section.js"
 import newSession from "../src/routes/session/session.new_session.js"
+import Schedule from "../src/models/schedule.model.js"
+
+import updateSession from "../src/routes/session/session.update_session.js"
+import deleteSession from "../src/routes/session/session.delete_session.js"
+import deleteSection from "../src/routes/section/section.delete_section.js"
+import deleteSubject from "../src/routes/subject/subject.delete_subject.js"
+import Subject from "../src/models/subject.model.js"
 
 describe("Schedules CRUD", () => {
 
@@ -151,13 +159,130 @@ describe("Schedules CRUD", () => {
 
 		it("Create Schedule with non colliding subjects", async function() {
 			this.timeout(10000)
-			assert(await newSchedule({
+			assert(await generateSchedules({
 				query: {
 					nrcs: "1,2,3"
 				}
 			}).then(res => {
-				console.log(res)
+				const nrcs = res.flat().map(section => section.nrc)
+				return [toAddSectionMath, toAddSectionProgram, toAddSectionLanguage].map(section => section.nrc).every(nrc => nrcs.includes(nrc))
 			}))
+		})
+
+		it("If a session is deleted, the schedule should be deleted", async function() {
+			this.timeout(10000)
+			const generatedSchedule = await generateSchedules({
+				query: {
+					nrcs: "1,2,3"
+				}
+			}).then(res => res.at(0))
+			const scheduleObject = new Schedule({
+				_id: new mongoose.mongo.ObjectId(),
+				owner: new mongoose.mongo.ObjectId(),
+				sections: generatedSchedule,
+			})
+			const toDelete = await scheduleObject.save()
+			const wasAdded = await Schedule.findById(toDelete._id).then(res => res !== undefined && res !== null)
+			if (!wasAdded)
+				assert(false)
+
+			await deleteSession({
+				query: {
+					day: toAddSessionMath.day,
+					startHour: toAddSessionMath.start.hour,
+					startMinute: toAddSessionMath.start.minute,
+					endHour: toAddSessionMath.end.hour,
+					endMinute: toAddSessionMath.end.minute,
+					nrc: toAddSectionMath.nrc,
+				}
+			})
+
+			assert(await Schedule.findById(toDelete._id).then(res => res === undefined || res === null))
+		})
+
+		it("If a session is updated, the schedule should be deleted", async function() {
+			this.timeout(10000)
+			const generatedSchedule = await generateSchedules({
+				query: {
+					nrcs: "1,2,3"
+				}
+			}).then(res => res.at(0))
+			const scheduleObject = new Schedule({
+				_id: new mongoose.mongo.ObjectId(),
+				owner: new mongoose.mongo.ObjectId(),
+				sections: generatedSchedule,
+			})
+			const toDelete = await scheduleObject.save()
+			const wasAdded = await Schedule.findById(toDelete._id).then(res => res !== undefined && res !== null)
+			if (!wasAdded)
+				assert(false)
+
+			await updateSession({
+				query: {
+					oldDay: toAddSessionMath.day,
+					oldStartHour: toAddSessionMath.start.hour,
+					oldStartMinute: toAddSessionMath.start.minute,
+					oldEndHour: toAddSessionMath.end.hour,
+					oldEndMinute: toAddSessionMath.end.minute,
+					nrc: toAddSectionMath.nrc,
+					newDay: 5,
+				}
+			})
+
+			assert(await Schedule.findById(toDelete._id).then(res => res === undefined || res === null))
+		})
+
+		it("If a section is deleted, the schedule should be deleted", async function() {
+			this.timeout(10000)
+			const generatedSchedule = await generateSchedules({
+				query: {
+					nrcs: "1,2,3"
+				}
+			}).then(res => res.at(0))
+			const scheduleObject = new Schedule({
+				_id: new mongoose.mongo.ObjectId(),
+				owner: new mongoose.mongo.ObjectId(),
+				sections: generatedSchedule,
+			})
+			const toDelete = await scheduleObject.save()
+			const wasAdded = await Schedule.findById(toDelete._id).then(res => res !== undefined && res !== null)
+			if (!wasAdded)
+				assert(false)
+
+			await deleteSection({
+				query: {
+					nrc: toAddSectionMath.nrc
+				}
+			})
+
+			assert(await Schedule.findById(toDelete._id).then(res => res === undefined || res === null))
+		})
+
+
+		it("If a subject is deleted, the schedule should be deleted", async function() {
+			this.timeout(10000)
+			const generatedSchedule = await generateSchedules({
+				query: {
+					nrcs: "1,2,3"
+				}
+			}).then(res => res.at(0))
+			const scheduleObject = new Schedule({
+				_id: new mongoose.mongo.ObjectId(),
+				owner: new mongoose.mongo.ObjectId(),
+				sections: generatedSchedule,
+			})
+			const toDelete = await scheduleObject.save()
+			const wasAdded = await Schedule.findById(toDelete._id).then(res => res !== undefined && res !== null)
+			if (!wasAdded)
+				assert(false)
+
+			await deleteSubject({
+				query: {
+					name: subjectMath.name
+				}
+			})
+
+			assert(await Schedule.findById(toDelete._id).then(res => res === undefined || res === null))
 		})
 	})
 })

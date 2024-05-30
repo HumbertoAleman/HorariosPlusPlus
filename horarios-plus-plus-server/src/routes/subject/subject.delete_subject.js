@@ -23,7 +23,7 @@ export default async function deleteSubject(req, res) {
 	}
 
 	for (const sectionId of deletedData.sections) {
-		const nrc = await Section.findByIdAndDelete(sectionId).then(res => res.nrc)
+		const nrc = await Section.findById(sectionId).then(res => res.nrc)
 		await deleteSection({ query: { nrc: nrc } })
 	}
 

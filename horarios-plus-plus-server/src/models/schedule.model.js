@@ -6,5 +6,5 @@ const ScheduleSchema = new mongoose.Schema({
   sections: [{ type: mongoose.Schema.Types.ObjectId, ref: "Section" }],
 })
 
-const Schedule = mongoose.model(ScheduleSchema, "Schedule")
+const Schedule = mongoose.model("Schedule", ScheduleSchema)
 export default Schedule

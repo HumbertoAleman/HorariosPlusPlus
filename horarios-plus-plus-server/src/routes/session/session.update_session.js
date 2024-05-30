@@ -1,6 +1,7 @@
 import mongoose from "mongoose"
 import Section from "../../models/section.model.js"
 import Session from "../../models/session.model.js"
+import Schedule from "../../models/schedule.model.js"
 
 function hoursIntersect(start_x, end_x, start_y, end_y) {
 	return ((start_x.minute + start_x.hour * 60 < end_y.minute + end_y.hour * 60) &&
@@ -90,6 +91,9 @@ export default async function updateSession(req, res) {
 		start: newSessionStart,
 		end: newSessionEnd,
 	}, { new: true }) // we set the new flag to return the updated version
+
+	// We want to remove all of the schedules that contain the modified session
+	const schedulesToDelete = await Schedule.deleteMany({ sections: new mongoose.mongo.ObjectId(updatedSession.section) })
 
 	res?.send(updatedSession)
 	return updatedSession

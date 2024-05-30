@@ -42,7 +42,7 @@ async function GenerateSchedules(sectionList, subjectCount) {
 	return returnArray
 }
 
-export default async function newSchedule(req, res) {
+export default async function generateSchedules(req, res) {
 	const nrcs = req?.query?.nrcs
 
 	if (nrcs === undefined) {

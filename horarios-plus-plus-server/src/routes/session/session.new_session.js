@@ -1,6 +1,7 @@
 import mongoose from "mongoose"
 import Section from "../../models/section.model.js"
 import Session from "../../models/session.model.js"
+import Schedule from "../../models/schedule.model.js"
 
 function hoursIntersect(start_x, end_x, start_y, end_y) {
 	return ((start_x.minute + start_x.hour * 60 < end_y.minute + end_y.hour * 60) &&
@@ -80,8 +81,11 @@ export default async function newSession(req, res) {
 		return { message: "ERROR an unexpected error has occurred", code: 0 }
 	}
 
-	await Section.findOneAndUpdate(section,
-		{ sessions: section.sessions.concat(new mongoose.mongo.ObjectId(savedSession._id)) })
+	const updatedSection = await Section.findOneAndUpdate(section,
+		{ sessions: section.sessions.concat(new mongoose.mongo.ObjectId(savedSession._id)) }, { new: true })
+
+	// We want to remove all of the schedules that contain the modified section
+	const schedulesToDelete = await Schedule.deleteMany({ sections: new mongoose.mongo.ObjectId(updatedSection._id) })
 
 	res?.send(savedSession)
 	return savedSession
