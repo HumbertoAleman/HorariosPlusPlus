@@ -5,6 +5,7 @@ const UserSchema = new mongoose.Schema({
   email: { type: String, require: true, unique: true },
   password: { type: String, require: true, unique: false },
   id: { type: String, require: true, unique: true },
+  type: { type: String, require: true, unique: false },
 	schedule: { type: mongoose.Schema.Types.ObjectId, require: false, unique: false, ref: "Schedule" }
 })
 

@@ -2,6 +2,7 @@ import User from "../../models/user.model.js"
 import mongoose from "mongoose"
 
 export default async function newUser(req, res) {
+	const userType = req?.query?.type
 	const userEmail = req?.query?.email
 	const userPassword = req?.query?.password
 	const userId = req?.query?.id
@@ -20,11 +21,36 @@ export default async function newUser(req, res) {
 		res?.send({ message: "ERROR userId cannot be undefined", code: 0 })
 		return { message: "ERROR userId cannot be undefined", code: 0 }
 	}
-	
+
+	let type
+	switch (userType) {
+		case "alumno":
+			type = "alumno"
+			break;
+		case "profesor":
+			type = "profesor"
+			break;
+		case "organizador":
+			type = "organizador"
+			break;
+		case "admin":
+			type = "admin"
+			break;
+		default:
+			type = undefined
+			break;
+	}
+
+	if (userType === undefined) {
+		res?.send({ message: "ERROR userType cannot be undefined", code: 0 })
+		return { message: "ERROR userType cannot be undefined", code: 0 }
+	}
+
 	const createdUser = new User({
 		_id: new mongoose.mongo.ObjectId(),
 		email: userEmail,
 		password: userPassword,
+		type: type,
 		id: userId
 	})
 	const savedUser = await createdUser.save();
