@@ -1,4 +1,3 @@
-import Section from "../../models/section.model.js"
 import Subject from "../../models/subject.model.js"
 import deleteSection from "../section/section.delete_section.js"
 
@@ -23,8 +22,7 @@ export default async function deleteSubject(req, res) {
 	}
 
 	for (const sectionId of deletedData.sections) {
-		const nrc = await Section.findById(sectionId).then(res => res.nrc)
-		await deleteSection({ query: { nrc: nrc } })
+		await deleteSection({ query: { id: sectionId } })
 	}
 
 	res?.send(deletedData)

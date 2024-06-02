@@ -5,6 +5,31 @@ import Session from "../../models/session.model.js"
 import Schedule from "../../models/schedule.model.js"
 
 export default async function deleteSession(req, res) {
+	const mongoId = req?.query?.id
+	if (mongoId !== undefined) {
+		const foundSession = await Session.findById(mongoId)
+		if (foundSession === null || foundSession === undefined) {
+			res?.send({ message: "ERROR mongoId provided but session not found", code: 0 })
+			return { message: "ERROR mongoId provided but session not found", code: 0 }
+		}
+		await Session.findByIdAndDelete(mongoId)
+
+		const sectionToUpdate = await Section.findById(foundSession.section)
+		if (sectionToUpdate === null || sectionToUpdate === undefined) {
+			res?.send({ message: "ERROR session has no section attached", code: 0 })
+			return { message: "ERROR session has no section attached", code: 0 }
+		}
+
+		await Section.findByIdAndUpdate(sectionToUpdate._id, {
+			sessions: sectionToUpdate.sessions.filter(x => !x._id.equals(mongoId))
+		})
+
+		await Schedule.deleteMany({ sections: new mongoose.mongo.ObjectId(foundSession.section) })
+
+		res?.send(foundSession)
+		return foundSession
+	}
+
   const sessionDay = req?.query?.day
   const sessionStart = {
     minute: req?.query?.startMinute,
