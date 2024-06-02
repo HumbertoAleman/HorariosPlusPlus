@@ -16,14 +16,15 @@ export default async function deleteSection(req, res) {
 		await Section.findByIdAndDelete(mongoId)
 
 		const subjectToUpdate = await Subject.findById(foundSection.subject)
-		if (subjectToUpdate === null || subjectToUpdate === undefined) {
-			res?.send({ message: "ERROR section has no subject attached", code: 0 })
-			return { message: "ERROR section has no subject attached", code: 0 }
+		if (subjectToUpdate !== null && subjectToUpdate !== undefined) {
+			await Subject.findByIdAndUpdate(subjectToUpdate._id, {
+				sections: subjectToUpdate.sections.filter(x => !x._id.equals(mongoId))
+			})
 		}
 
-		await Subject.findByIdAndUpdate(subjectToUpdate._id, {
-			sections: subjectToUpdate.sections.filter(x => !x._id.equals(mongoId))
-		})
+		for (const sessionId of foundSection.sessions) {
+			await deleteSession({ query: { id: sessionId } })
+		}
 
 		res?.send(foundSection)
 		return foundSection
