@@ -14,12 +14,10 @@
 
 :root {
   --text-color: #E0E0E0;
-  --background-dark-color: #052F5F;
-  --background-light-color: #3498db;
-  --button-background-color: #04AA6D;
-  --button-background-light-color: #05BA7D;
+  --navbar-background-color: #05AD71;
+  --navbar-background-hover-color: #00c781;
+  --main-background-color: #05AD71;
 }
-
 
 body {
   margin: unset;
@@ -27,6 +25,20 @@ body {
   border: unset;
   font-family: "MotivaSans";
 }
+
+/* ANCHOR OVERFLOW VARIABLES */
+.over-hidden {
+  overflow: hidden;
+}
+
+/* ANCHOR TEXT VARIABLES */
+.non-highlightable {
+  user-select: none;
+}
+
+/* ANCHOR POSITION VARIABLES */
+.relative-pos { position: relative; }
+.absolute-pos { position: absolute; }
 
 /* ANCHOR FLEX VARIABLES */
 .flex-horizontal {
@@ -41,4 +53,13 @@ body {
 
 .flex-center {
   align-items: center;
+}
+
+/* ANCHOR SIZE VARIABLES */
+.vh100 {
+  height: 100vh;
+}
+
+.vh75 {
+  height: 75vh;
 }

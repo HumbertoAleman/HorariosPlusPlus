@@ -3,7 +3,9 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import reportWebVitals from './reportWebVitals.js';
 
-import LandingInterface from './Pages/Landing.tsx';
+import LandingInterface from './Pages/Landing/Landing.tsx';
+import GenerationInterface from './Pages/Generation/Generation.tsx';
+import LoginInterface from './Pages/Login/Login.tsx';
 
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
@@ -13,6 +15,8 @@ export default function App() {
       <Routes>
         <Route path="/">
           <Route index element={<LandingInterface/>}/>
+          <Route path="generation" element={<GenerationInterface/>}/>
+          <Route path="login" element={<LoginInterface/>}/>
         </Route>
       </Routes>
     </BrowserRouter>
