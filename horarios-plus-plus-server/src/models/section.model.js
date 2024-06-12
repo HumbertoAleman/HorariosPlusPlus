@@ -142,7 +142,6 @@ export default class Section {
 	static delete = async (nrc) => {
 		if (nrc === undefined)
 			return { message: "ERROR nrc is undefined", code: 0 }
-
 		if (await Section.checkIfExists(nrc).then(res => !res))
 			return { message: "ERROR there is no section with nrc " + nrc, code: 0 }
 

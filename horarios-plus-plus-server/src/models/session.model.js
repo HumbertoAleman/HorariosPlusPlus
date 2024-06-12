@@ -34,6 +34,8 @@ export default class Session {
 	static checkIfExists = async (data) => await Session.#model.find(data).then(res => res !== undefined && res !== null)
 	static checkIfIdExists = async (id) => await Session.#model.findById(id).then(res => res !== undefined && res !== null)
 
+	static dropDb = async () => await mongoose.connection.collections.sections.drop()
+
 	static #model = mongoose.model("Session", Session.#schema)
 
 	// NOTE: CREATE
