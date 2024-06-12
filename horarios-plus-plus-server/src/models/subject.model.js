@@ -1,4 +1,5 @@
 import mongoose from "mongoose"
+import Section from "./section.model.js"
 const ObjectId = mongoose.Types.ObjectId
 
 export default class Subject {
@@ -12,7 +13,41 @@ export default class Subject {
 
 	static find = async (name) => await Subject.#model.find({ name: name })
 	static findOne = async (name) => await Subject.#model.findOne({ name: name })
+	static findById = async (id) => await Subject.#model.findById(id)
+
 	static findAndUpdate = async (oldName, newName) => await Subject.#model.findOneAndUpdate({ name: oldName }, { name: newName }, { new: true })
+
+	static byIdAddSection = async (subjectId, sectionId) =>
+		await Subject.#model.findByIdAndUpdate(
+			subjectId, {
+			sections: await Subject.findOne(subjectName).then(res =>
+				res.sections.concat(new ObjectId(sectionId)))
+		})
+
+	static byNameAddSection = async (subjectName, sectionId) =>
+		await Subject.#model.findOneAndUpdate(
+			{ name: subjectName }, {
+			sections: await Subject.findOne(subjectName).then(res =>
+				res.sections.concat(new ObjectId(sectionId)))
+		})
+
+	static byIdRemoveSection = async (subjectId, sectionId) =>
+		await Subject.#model.findByIdAndUpdate(
+			subjectId, {
+			sections: await Subject.findOne(subjectName).then(res =>
+				res.sections.filter(otherId => !otherId.equals(sectionId)))
+		})
+
+	static byNameRemoveSection = async (subjectName, sectionId) =>
+		await Subject.#model.findOneAndUpdate(
+			{ name: subjectName }, {
+			sections: await Subject.findOne(subjectName).then(res =>
+				res.sections.filter(otherId => !otherId.equals(sectionId)))
+		})
+
+	static hasSection = async (subjectId, sectionId) =>
+		await Subject.findById(subjectId).then(res => res.sections.some(id => id.equals(sectionId)))
+
 	static findAndDelete = async (name) => await Subject.#model.findOneAndDelete({ name: name })
 	static dropDb = async () => await mongoose.connection.collections.subjects.drop()
 	static countSubjects = async () => await Subject.#model.find().countDocuments() + 1 ?? 1
@@ -42,7 +77,7 @@ export default class Subject {
 		if (await Subject.checkIfExists(createdUser.name))
 			return savedUser
 
-		return { message: "ERROR saving section", code: 0 }
+		return { message: "ERROR saving subject", code: 0 }
 	}
 
 	// NOTE: READ
@@ -58,7 +93,7 @@ export default class Subject {
 		if (newName === undefined)
 			return { message: "ERROR newName is undefined", code: 0 }
 
-		const updatedSubject = await Subject.findAndUpdate(oldName,newName)
+		const updatedSubject = await Subject.findAndUpdate(oldName, newName)
 		if (updatedSubject === undefined || updatedSubject === null)
 			return { message: "ERROR subject with name " + oldName + " was not found", code: 0 }
 		return updatedSubject
@@ -72,11 +107,11 @@ export default class Subject {
 			return { message: "ERROR subject does not exist", code: 0 }
 
 		const deletedData = await Subject.findAndDelete(name)
-		if (deletedData === undefined) 
+		if (deletedData === undefined)
 			return { message: "ERROR an error has occurred deleting the subject", code: 0 }
 
 		for (const sectionId of deletedData.sections)
-			await SectionController.deleteSection({ query: { id: sectionId } })
+			await Section.deleteById(sectionId)
 
 		return deletedData
 	}

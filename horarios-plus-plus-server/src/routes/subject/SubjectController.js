@@ -34,7 +34,7 @@ export default class SubjectController {
 
 	// NOTE: DELETE
 	static async deleteSubject(req, res) {
-		const response = Subject.update(req?.query?.name)
+		const response = Subject.delete(req?.query?.name)
 		if ("code" in response)
 			console.log(response.message)
 

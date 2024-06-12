@@ -43,7 +43,7 @@ describe("Subject CRUD", () => {
 		})
 
 		it("Delete subject", async () => {
-			assert(await SubjectController.deleteSubject({ query: { name: toDelete.name } }).then(async res => !await Subject.checkIfExists(res.name)))
+			assert(await SubjectController.deleteSubject({ query: { name: toDelete.name } }).then(async res => await Subject.checkIfExists(res.name).then(res => !res)))
 		})
 	})
 })
