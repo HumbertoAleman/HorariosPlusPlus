@@ -26,7 +26,7 @@ export default class Session {
 
 	static findOne = async (data) => await Session.#model.findOne(data)
 	static findById = async (id) => await Session.#model.findById(id)
-	static finyByIdAndUpdate = async (id, newData) =>
+	static findByIdAndUpdate = async (id, newData) =>
 		await Session.#model.findByIdAndUpdate(id, newData, { new: true })
 	static findByIdAndDelete = async (id) =>
 		await Session.#model.findByIdAndDelete(id)
@@ -145,7 +145,7 @@ export default class Session {
 		if (sessionList.some(session => session.day === newSessionDay && hoursIntersect(newSessionStart, newSessionEnd, session.start, session.end)))
 			return { message: "ERROR sessions collide", code: 0 }
 
-		const updatedSession = await Session.finyByIdAndUpdate(oldSession._id, {
+		const updatedSession = await Session.findByIdAndUpdate(oldSession._id, {
 			day: newSessionDay,
 			start: newSessionStart,
 			end: newSessionEnd,
