@@ -9,5 +9,5 @@ const UserSchema = new mongoose.Schema({
 	schedule: { type: mongoose.Schema.Types.ObjectId, require: false, unique: false, ref: "Schedule" }
 })
 
-const User = mongoose.model(UserSchema, "User")
+const User = mongoose.model("User", UserSchema)
 export default User

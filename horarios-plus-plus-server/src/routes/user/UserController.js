@@ -39,13 +39,8 @@ export default class UserController {
 				type = "admin"
 				break;
 			default:
-				type = undefined
-				break;
-		}
-
-		if (userType === undefined) {
-			res?.send({ message: "ERROR userType cannot be undefined", code: 0 })
-			return { message: "ERROR userType cannot be undefined", code: 0 }
+				res?.send({ message: "ERROR userType cannot be undefined", code: 0 })
+				return { message: "ERROR userType cannot be undefined", code: 0 }
 		}
 
 		const createdUser = new User({
