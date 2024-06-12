@@ -1,4 +1,4 @@
-import Schedule from "../../models/schedule.model"
+import Schedule from "../../models/schedule.model.js"
 import Section from "../../models/section.model.js"
 import Session from "../../models/session.model.js";
 import UserController from "../user/UserController.js";

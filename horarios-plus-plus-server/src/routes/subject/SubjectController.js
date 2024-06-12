@@ -1,5 +1,4 @@
 import Subject from "../../models/subject.model.js"
-import SectionController from "../section/SectionController.js"
 
 export default class SubjectController {
 	// NOTE: CREATE
