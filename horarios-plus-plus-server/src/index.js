@@ -11,9 +11,9 @@ const uri = "mongodb+srv://humberto:cocosete@serverdata.64ryvhh.mongodb.net/?ret
 const clientOptions = { serverApi: { version: '1', strict: true, deprecationErrors: true } };
 
 async function run() {
-  await mongoose.connect(uri, clientOptions);
-  await mongoose.connection.db.admin().command({ ping: 1 });
-  console.log("Successfully connected to MongoDB");
+	await mongoose.connect(uri, clientOptions);
+	await mongoose.connection.db.admin().command({ ping: 1 });
+	console.log("Successfully connected to MongoDB");
 }
 
 run().catch(console.dir);
@@ -21,7 +21,7 @@ run().catch(console.dir);
 subjectRoutes(app)
 
 app
-  .use(cors({ origin: "*" }))
-  .listen(port, () => {
-    console.log(`Example app listening on port ${port}`)
-  })
+	.use(cors({ origin: "*" }))
+	.listen(port, () => {
+		console.log(`Example app listening on port ${port}`)
+	})
