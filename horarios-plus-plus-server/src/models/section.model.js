@@ -1,6 +1,6 @@
 import mongoose from "mongoose"
 import Subject from "./subject.model.js"
-import SessionController from "../routes/session/SessionController.js"
+import Session from "./session.model.js"
 import Schedule from "./schedule.model.js"
 const ObjectId = mongoose.Types.ObjectId
 
@@ -135,7 +135,7 @@ export default class Section {
 	static #editAffected = async (sectionObject) => {
 		Subject.byIdRemoveSection(sectionObject.subject, deletedData._id)
 		for (const sessionId of sectionObject.sessions)
-			await SessionController.deleteSession({ query: { id: sessionId } })
+			await Session.findByIdAndDelete(sessionId)
 		await Schedule.deleteMany({ sections: sectionObject._id })
 	}
 

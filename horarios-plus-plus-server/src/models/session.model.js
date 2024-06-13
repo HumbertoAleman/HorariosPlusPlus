@@ -3,7 +3,6 @@ const ObjectId = mongoose.Types.ObjectId
 import Section from "./section.model.js"
 import Schedule from "./schedule.model.js"
 
-
 export default class Session {
 	static #hoursIntersect(start_x, end_x, start_y, end_y) {
 		return ((start_x.minute + start_x.hour * 60 < end_y.minute + end_y.hour * 60) &&
