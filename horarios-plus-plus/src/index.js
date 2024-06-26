@@ -10,6 +10,9 @@ import LoginInterface from './Pages/Login/Login.tsx';
 import SignUpInterface from './Pages/SignUp/SignUp.tsx';
 import MySchedule from "./Pages/MySchedule/MySchedule.tsx"
 import NotFoundInterface from "./Pages/404/NotFoundInterface.tsx"
+import Event from './Pages/Events/Events.tsx';
+import Permissions from './Pages/Permissions/Permissions.tsx';
+import Intersection from './Pages/Intersection/Intersection.tsx';
 
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 
@@ -24,6 +27,9 @@ export default function App() {
           <Route path="courses" element={<CoursesInterface/>}/>
           <Route path="login" element={<LoginInterface/>}/>
           <Route path="signup" element={<SignUpInterface/>}/>
+          <Route path="events" element={<Event/>}/>
+          <Route path="permissions" element={<Permissions/>}/>
+          <Route path="intersection" element={<Intersection/>}/>
           <Route path="404" element={<NotFoundInterface/>}/>
         </Route>
       </Routes>
