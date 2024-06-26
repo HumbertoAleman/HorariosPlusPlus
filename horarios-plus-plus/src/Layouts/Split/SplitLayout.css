@@ -1,0 +1,33 @@
+.split-layout {
+  display: flex;
+  flex-flow: column nowrap;
+
+  height: 100vh;
+  max-height: 100vh;
+  width: 100vw;
+  max-width: 100vw;
+  overflow: hidden;
+
+  background-color: #808080;
+}
+
+.split-wrapped {
+  display: flex;
+  flex-flow: row nowrap;
+
+  flex-grow: 1;
+}
+
+.split-wrapped > div:nth-child(1) {
+  flex-basis: 30%;
+  background-color: white;
+}
+
+.split-wrapped > div:nth-child(2) {
+  flex-basis: 70%;
+  background-color: white;
+
+  border-radius: 2rem;
+  padding: 1.5rem;
+  margin: 1.25rem;
+}
