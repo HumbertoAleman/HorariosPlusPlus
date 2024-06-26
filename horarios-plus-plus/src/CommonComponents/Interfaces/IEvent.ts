@@ -1,4 +1,5 @@
 export default interface IEvent {
+  name: string,
   day: number,
   start: {
     hour: number,
