@@ -1,0 +1,15 @@
+.left-event-container {
+  display: flex;
+  flex-flow: column nowrap;
+  gap: 2px;
+
+  overflow-y: scroll;
+}
+
+.left-event-container > div {
+  background: blue;
+  color: white;
+
+  font-size: 18px;
+  padding: 4px 0px 4px 4px;
+}
