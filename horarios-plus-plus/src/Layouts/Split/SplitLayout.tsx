@@ -1,14 +1,17 @@
-import React from "react"
-import NavBar from "../../Pages/NavBar/NavBar.tsx"
+import "./SplitLayout.css"
 
-// TODO: Transformar esto en el split layout
+import React from "react"
+import NavBar from "../../CommonComponents/NavBar/NavBar.tsx";
+
 export default function SplitLayout({ children }) {
   return (
-    <div className="split-layout">
-      <main>
+    <main>
+      <div className="split-layout">
         <NavBar/>
-        { children }
-      </main>
-    </div>
+        <div className="split-wrapped">
+          { children }  
+        </div>
+      </div>
+    </main>
   )
 }
