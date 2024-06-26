@@ -10,10 +10,10 @@ export default function NavBar() {
       <div>
         <a href="schedule">Mi Horario</a>
         <a href="generation">Generar</a>
-        <a href="">Eventos</a>
+        <a href="events">Eventos</a>
         <a href="courses">Materias</a>
-        <a href="">Permisos</a>
-        <a href="">Cruze</a>
+        <a href="permissions">Permisos</a>
+        <a href="intersection">Cruze</a>
 
       </div>
       <div>
