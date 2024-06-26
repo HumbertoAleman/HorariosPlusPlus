@@ -7,9 +7,25 @@
 }
 
 .left-event-container > div {
-  background: blue;
-  color: white;
 
   font-size: 18px;
   padding: 4px 0px 4px 4px;
+}
+
+.event-button {
+  border: none;
+  flex-grow: 1;
+
+  background: blue;
+  color: white;
+}
+
+.event-button:hover {
+  background: cyan;
+  color: white;
+}
+
+.event-button:active {
+  background: white;
+  color: black;
 }
