@@ -1,0 +1,17 @@
+.main-title {
+  font-size: 6rem;
+}
+.t2-title {
+  font-size: 2rem;
+}
+
+.main-container{
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 4rem;
+}
+
+.text-container {
+  
+}

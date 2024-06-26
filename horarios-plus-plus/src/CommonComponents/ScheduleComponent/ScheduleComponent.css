@@ -1,0 +1,7 @@
+.schedule-component {
+  display: grid;
+  grid-template-columns: 0.5fr repeat(7, 1fr);
+  grid-template-rows: 4fr repeat(56, 1fr);
+  grid-auto-flow: column;
+  background-color: red;
+}
