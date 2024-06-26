@@ -8,15 +8,17 @@ export default function NavBar() {
         <a href="/">HorariosPlusPlus</a>
       </div>
       <div>
-        <a href="">Mi Horario</a>
+        <a href="schedule">Mi Horario</a>
         <a href="generation">Generar</a>
         <a href="">Eventos</a>
-        <a href="">Materias</a>
+        <a href="courses">Materias</a>
         <a href="">Permisos</a>
+        <a href="">Cruze</a>
+
       </div>
       <div>
-        <a href="login">log</a>
-        <a>sign</a>
+        <a href="login">Iniciar Sesion</a>
+        <a href="signup">Crear Cuenta</a>
         <a>|→</a>
       </div>
     </div>

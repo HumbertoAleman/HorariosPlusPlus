@@ -17,6 +17,7 @@
   --navbar-background-color: #05AD71;
   --navbar-background-hover-color: #00c781;
   --main-background-color: #05AD71;
+  --main-background-light-color: #00c781;
 }
 
 body {
@@ -24,6 +25,10 @@ body {
   padding: unset;
   border: unset;
   font-family: "MotivaSans";
+}
+
+button:hover {
+  cursor: pointer;
 }
 
 /* ANCHOR OVERFLOW VARIABLES */

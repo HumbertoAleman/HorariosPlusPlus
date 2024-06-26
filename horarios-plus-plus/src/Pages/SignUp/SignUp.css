@@ -10,13 +10,12 @@
 .login-container {
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: stretch;
 
   background-color: var(--main-background-color);
   border-radius: 4px;
 
   padding: 3rem;
-  
 }
 
 .field {
@@ -26,15 +25,22 @@
   border-radius: 4px;
   padding: 10px;
   font-size: 24px;
+
+  border: none;
+}
+
+.field:invalid {
+  color: red;
 }
 
 .title-white {
+  font-weight: bold;
   color:white;
   font-size: 50px;
   margin-bottom: 2rem;
 }
 
-.login-button {
+.signup-button {
   margin-top: 1rem;
   background-color:white; /* Green */
   border: none;
@@ -47,7 +53,26 @@
   font-size: 16px;
 }
 
-.login-button:hover {
+.signup-button:hover {
   background-color: rgb(207, 207, 207);
   transition: all 1.5 ease-in;
+}
+
+.signup-button:active {
+  background-color: rgb(255, 255, 255);
+  transition: all 2.5 ease-in;
+}
+
+select.account-type-dropdown {
+  background: white;
+  color: black;
+
+  border: none;
+  font-size: 16px;
+  padding: 1rem 0rem 1rem 1rem;
+  margin: 0rem 2rem 1rem 2rem;
+}
+
+select.account-type-dropdown > option{
+  background: red;
 }

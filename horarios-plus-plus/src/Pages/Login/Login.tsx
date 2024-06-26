@@ -1,6 +1,5 @@
 import React from "react";
-import NavBar from "../NavBar/NavBar.tsx";
-
+import NavBar from "../../CommonComponents/NavBar/NavBar.tsx";
 import "./Login.css";
 
 export default function Login() {
@@ -12,13 +11,13 @@ export default function Login() {
           <div className="title-white">
             Horarios Plus Plus
           </div>
-          <div>
-            <input className="field" placeholder="Correo electronico" type="text" id="fname" name="fname"/>
+          <div className="flex-horizontal flex-center">
+            <input className="field" placeholder="Correo electronico" type="email" id="fname" name="fname"/>
           </div>
-          <div>
+          <div className="flex-horizontal flex-center">
             <input className="field" placeholder="Contraseña" type="password" id="fname" name="fname"/>
           </div>
-          <div>
+          <div className="flex-horizontal flex-center">
             <button className="login-button" type="button">Iniciar Sesion</button> 
           </div>
         </div>

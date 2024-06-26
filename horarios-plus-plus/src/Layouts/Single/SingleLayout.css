@@ -1,0 +1,25 @@
+.single-layout {
+  display: flex;
+  flex-flow: column nowrap;
+
+  height: 100vh;
+  max-height: 100vh;
+  width: 100vw;
+  max-width: 100vw;
+  overflow: hidden;
+
+  background-color: #808080;
+}
+
+.single-wrapped {
+  display: flex;
+  flex-flow: column nowrap;
+
+  background-color: white;
+
+  border-radius: 2rem;
+  padding: 1.5rem;
+  margin: 1.25rem;
+
+  flex-grow: 1;
+}
