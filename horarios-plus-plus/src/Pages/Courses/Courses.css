@@ -62,8 +62,9 @@
   margin-left: 1rem;
   margin-right: 1rem;
 }
-.sections-list {
-  
+
+.section > button:nth-child(1) {
+  flex-grow: 1;
 }
 
 .day-container {

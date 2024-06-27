@@ -1,7 +1,9 @@
 import ISession from "./ISession.ts"
+import ISubject from "./ISubject.ts"
 
 export default interface ISection {
   nrc: number,
   teacher: string,
-  sessions: ISession[]
+  subject: ISubject,
+  sessions: ISession[],
 }
