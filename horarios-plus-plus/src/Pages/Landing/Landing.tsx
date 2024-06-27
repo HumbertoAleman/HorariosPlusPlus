@@ -88,7 +88,7 @@ export default function Landing() {
 
             <div className="flex-vertical  dev-box text">
               <div> Humberto Aleman </div>
-              <div> <a href="https://github.com/Kimbix">GitHub</a> </div>
+              <div> <a href="https://github.com/HumbertoAleman">GitHub</a> </div>
             </div>
 
             <div className="flex-vertical dev-box text">
