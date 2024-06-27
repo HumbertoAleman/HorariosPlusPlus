@@ -54,6 +54,8 @@ export default function Courses() {
     const newSubjects = loadedSubjects
 
     // Find subject where section is
+
+    // TODO: Check if its really necessary to reasign the subjectToEdit after editing it
     const subjectToEdit: ISubject = newSubjects[loadedSubjects.findIndex(subject => subject.sections.some(other => other === selectedSection))]
     subjectToEdit.sections[subjectToEdit.sections.findIndex(otherSection => otherSection === selectedSection)] = section
     newSubjects[newSubjects.findIndex(x => x === subjectToEdit)] = subjectToEdit
@@ -65,10 +67,12 @@ export default function Courses() {
   const removeSection = (section: ISection) => {
     // TODO: After we add the API functions, make this update only if API call was successful
 
+    // TODO: Check if its really necessary to reasign the subjectToEdit after editing it
+
     // because we're directly editing the array, we're not editing the value in any real way
     // and thus, we must create a shallow copy of the object for it to actually update the UI
     const newSubjects = loadedSubjects.map(x => x)
-    const subjectToEdit: ISubject = newSubjects[loadedSubjects.findIndex(subject => subject.sections.some(other => other === section))]
+    const subjectToEdit: ISubject = newSubjects[newSubjects.findIndex(subject => subject.sections.some(other => other === section))]
     subjectToEdit.sections = subjectToEdit.sections.filter(other => other !== section)
     newSubjects[newSubjects.findIndex(x => x === subjectToEdit)] = subjectToEdit
 
@@ -229,7 +233,7 @@ export default function Courses() {
             Sessiones
           </div>
           <div>
-            <button  type="button"> + </button>
+            <button type="button"> + </button>
             <div>
               {data.sessions.map(session => RSessionContainer(data, session))}
             </div>
@@ -244,7 +248,7 @@ export default function Courses() {
 
       {/* LEFT */}
       <div className="left-container">
-        { loadedSubjects.map(subject => LSubjectContainer(subject)) }
+        {loadedSubjects.map(subject => LSubjectContainer(subject))}
       </div>
 
       {/* RIGHT */}
