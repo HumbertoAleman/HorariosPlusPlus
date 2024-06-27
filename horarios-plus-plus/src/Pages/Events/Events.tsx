@@ -55,7 +55,7 @@ export default function Event() {
 
     // TODO: After we add the API functions, make this update only if API call was successful
     const newEvents = loadedEvents
-    newEvents[loadedEvents.findIndex(x => x === (selectedEvent))] = event
+    newEvents[loadedEvents.findIndex(x => x === selectedEvent)] = event
 
     setLoadedEvents(newEvents)
     setSelectedEvent(event)
@@ -68,7 +68,7 @@ export default function Event() {
 
   const LEventContainer = (data: IEvent) => (
     <div className="flex-horizontal">
-      <button className="event-button" onClick={() => selectEvent(data)}>
+      <button className="event-button" onClick={_ => selectEvent(data)}>
         {data.name}
       </button>
       <button onClick={_ => removeEvent(data)}> - </button>
