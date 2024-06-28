@@ -1,8 +1,15 @@
 import User from "../Modelos/user.model.js"
 
 export default class UserController {
+	static routeToApp(app) {
+		app.get("/api/users/newUser", (req, res) => UserController.#newUser(req, res))
+		app.get("/api/users/getUser", (req, res) => UserController.#getUser(req, res))
+		app.get("/api/users/updateUser", (req, res) => UserController.#updateUser(req, res))
+		app.get("/api/users/deleteUser", (req, res) => UserController.#deleteUser(req, res))
+	}
+
 	// NOTE: CREATE
-	static async newUser(req, res) {
+	static async #newUser(req, res) {
 		const response = await User.save(
 			req?.query?.type,
 			req?.query?.email,
@@ -18,7 +25,7 @@ export default class UserController {
 	}
 
 	// NOTE: READ
-	static async getUser(req, res) {
+	static async #getUser(req, res) {
 		let response
 
 		const userEmail = req?.query?.email
@@ -35,7 +42,7 @@ export default class UserController {
 		return response
 	}
 
-	static async updateUser(req, res) {
+	static async #updateUser(req, res) {
 		const response = await User.update(
 			req?.query?.id,
 			req?.query?.schedule,
@@ -51,7 +58,7 @@ export default class UserController {
 	}
 
 	// NOTE: DELETE
-	static async deleteUser(req, res) {
+	static async #deleteUser(req, res) {
 		const response = await User.delete(req?.query?.id)
 		if ("code" in response)
 			console.log(response.message)

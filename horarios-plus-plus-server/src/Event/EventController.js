@@ -1,8 +1,15 @@
 import Event from "../Modelos/event.model.js"
 
 export default class EventController {
+	static routeToApp(app) {
+		app.get("/api/events/newEvent", (req, res) => EventController.#newEvent(req, res))
+		app.get("/api/events/getEvents", (req, res) => EventController.#getEvents(req, res))
+		app.get("/api/events/updateEvent", (req, res) => EventController.#updateEvent(req, res))
+		app.get("/api/events/deleteEvent", (req, res) => EventController.#deleteEvent(req, res))
+	}
+
 	// NOTE: CREATE
-	static async newEvent(req, res) {
+	static async #newEvent(req, res) {
 		const response = await Event.save(
 			req?.query?.day,
 			{
@@ -22,7 +29,7 @@ export default class EventController {
 	}
 
 	// NOTE: READ
-	static async getEvents(req, res) {
+	static async #getEvents(req, res) {
 		const response = await Event.get(req?.query?.day)
 		if ("code" in response)
 			console.log(response)
@@ -32,7 +39,7 @@ export default class EventController {
 	}
 
 	// NOTE: UPDATE
-	static async updateEvent(req, res) {
+	static async #updateEvent(req, res) {
 		const response = await Event.update(
 			req?.query?.oldDay,
 			{
@@ -62,7 +69,7 @@ export default class EventController {
 	}
 
 	// NOTE: DELETE
-	static async deleteEvent(req, res) {
+	static async #deleteEvent(req, res) {
 		const response = await Event.delete(
 			req?.query?.day,
 			{

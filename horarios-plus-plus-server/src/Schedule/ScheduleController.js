@@ -1,8 +1,13 @@
 import Schedule from "../Modelos/schedule.model.js"
 
 export default class ScheduleController {
+	static routeToApp(app) {
+		app.get("/api/schedules/generateSchedules", (req, res) => ScheduleController.#generateSchedules(req, res))
+		app.get("/api/schedules/deleteSchedule", (req, res) => ScheduleController.#deleteSchedule(req, res))
+	}
+
 	// NOTE: CREATE
-	static async generateSchedules(req, res) {
+	static async #generateSchedules(req, res) {
 		const response = await Schedule.generateSchedules(
 			req?.query?.nrcs
 		)
@@ -14,7 +19,7 @@ export default class ScheduleController {
 	}
 
 	// NOTE: DELETE
-	static async deleteSchedule(req, res) {
+	static async #deleteSchedule(req, res) {
 		const ownerId = req?.query?.ownerId
 		const response = ownerId === undefined
 			? await Schedule.deleteById(id)
