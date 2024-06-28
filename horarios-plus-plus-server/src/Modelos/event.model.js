@@ -17,6 +17,7 @@ export default class Event {
 			hour: { type: Number, required: true },
 		},
 		day: { type: Number, required: true },
+		name: { type: String, required: true },
 	})
 
 	static #model = mongoose.model("Event", Event.#schema)
@@ -38,15 +39,25 @@ export default class Event {
 
 	static dropDb = async () => await mongoose.connection.collections.events.drop()
 
-	static save = async (eventDay, eventStart, eventEnd) => {
+	static save = async (eventDay, eventName, eventStart, eventEnd) => {
+		if (eventName === undefined)
+			return { message: "ERROR eventName is undefined", code: 0 }
+
 		if (eventStart.minute === undefined || eventStart.hour === undefined)
 			return { message: "ERROR eventStart is undefined", code: 0 }
+		eventStart.hour = parseInt(eventStart.hour)
+		eventStart.minute = parseInt(eventStart.minute)
+
 		if (eventEnd.minute === undefined || eventEnd.hour === undefined)
 			return { message: "ERROR eventEnd is undefined", code: 0 }
-		if (eventStart.hour * 60 + eventStart.minute >= eventEnd.hour * 60 + eventEnd.minute)
+		eventEnd.hour = parseInt(eventEnd.hour)
+		eventEnd.minute = parseInt(eventEnd.minute)
+
+		if ((eventStart.hour * 60 + eventStart.minute) >= (eventEnd.hour * 60 + eventEnd.minute))
 			return { message: "ERROR start cannot be equal to/before end", code: 0 }
 		if (eventDay === undefined)
 			return { message: "ERROR eventDay is undefined", code: 0 }
+		eventDay = parseInt(eventDay)
 
 		if (await Event.getAll()
 			.then(res => res.some(event => event.day === eventDay &&
@@ -57,6 +68,7 @@ export default class Event {
 		const newEvent = new Event.#model({
 			_id: new mongoose.mongo.ObjectId(),
 			day: eventDay,
+			name: eventName,
 			start: {
 				hour: eventStart.hour,
 				minute: eventStart.minute,
@@ -83,24 +95,37 @@ export default class Event {
 		return events
 	}
 
-	static update = async (oldEventDay, oldEventStart, oldEventEnd, newEventDay, newEventStart, newEventEnd) => {
+	static update = async (oldEventDay, oldEventName, oldEventStart, oldEventEnd, newEventDay, newEventName, newEventStart, newEventEnd) => {
 		if (oldEventStart.minute === undefined || oldEventStart.hour === undefined)
 			return { message: "ERROR oldEventStart is undefined", code: 0 }
+		oldEventStart.hour = parseInt(oldEventStart.hour)
+		oldEventStart.minute = parseInt(oldEventStart.minute)
+
 		if (oldEventEnd.minute === undefined || oldEventEnd.hour === undefined)
 			return { message: "ERROR oldEventEnd is undefined", code: 0 }
+		oldEventEnd.hour = parseInt(oldEventEnd.hour)
+		oldEventEnd.minute = parseInt(oldEventEnd.minute)
+
 		if (oldEventDay === undefined)
 			return { message: "ERROR oldEventDay is undefined", code: 0 }
-		if ((newEventStart.hour * 60 + newEventStart.minute) >=
-			(newEventEnd.hour * 60 + newEventEnd.minute))
-			return { message: "ERROR start cannot be equal to/before end", code: 0 }
+		oldEventDay = parseInt(oldEventDay)
+
+		if (oldEventName === undefined)
+			return { message: "ERROR oldEventName is undefined", code: 0 }
+		console.log(oldEventName)
+		console.log(newEventName)
 
 		const oldEvent = await Event.findOne({
 			day: oldEventDay,
+			name: oldEventName,
 			start: oldEventStart,
 			end: oldEventEnd,
 		})
 		if (oldEvent === undefined || oldEvent === null)
 			return { message: "ERROR event was not found", code: 0 }
+
+		if ((newEventStart.hour * 60 + newEventStart.minute) >= (newEventEnd.hour * 60 + newEventEnd.minute))
+			return { message: "ERROR start cannot be equal to/before end", code: 0 }
 
 		if (await Event.getAll()
 			.then(res => res.some(event => !event._id.equals(oldEvent._id) &&
@@ -111,6 +136,7 @@ export default class Event {
 
 		const updatedEvent = await Event.findByIdAndUpdate(oldEvent._id, {
 			day: newEventDay,
+			name: newEventName,
 			start: newEventStart,
 			end: newEventEnd,
 		})
@@ -120,16 +146,28 @@ export default class Event {
 		return updatedEvent
 	}
 
-	static delete = async (eventDay, eventStart, eventEnd) => {
+	static delete = async (eventDay, eventName, eventStart, eventEnd) => {
 		if (eventStart.minute === undefined || eventStart.hour === undefined)
 			return { message: "ERROR eventStart is undefined", code: 0 }
+		eventStart.hour = parseInt(eventStart.hour)
+		eventStart.minute = parseInt(eventStart.minute)
+
 		if (eventEnd.minute === undefined || eventEnd.hour === undefined)
 			return { message: "ERROR eventEnd is undefined", code: 0 }
+		eventEnd.hour = parseInt(eventEnd.hour)
+		eventEnd.minute = parseInt(eventEnd.minute)
+
 		if (eventDay === undefined)
 			return { message: "ERROR eventDay is undefined", code: 0 }
+		eventDay = parseInt(eventDay)
 
+		if (eventName === undefined)
+			return { message: "ERROR eventName is undefined", code: 0 }
+
+		console.log(eventName)
 		const deletedData = await Event.findByDataAndDelete({
 			day: eventDay,
+			name: eventName,
 			start: eventStart,
 			end: eventEnd,
 		})

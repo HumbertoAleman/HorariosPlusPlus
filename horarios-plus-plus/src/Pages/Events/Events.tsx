@@ -3,18 +3,21 @@ import "./Events.css"
 import React from "react"
 import SplitLayout from "../../Layouts/Split/SplitLayout.tsx"
 import IEvent from "../../CommonComponents/Interfaces/IEvent.ts"
+import { getAllEvents, newEvent, removeEvent, updateEvent } from "../../API_Functions/events.ts"
+
+const randInt = (from: number, to: number): number => Math.floor(Math.random() * (to - from)) + from
 
 const randomEvent = () => {
   return {
     name: "Test event " + Math.floor(Math.random() * 999),
-    day: 0,
+    day: randInt(1, 6),
     start: {
-      hour: 0,
-      minute: 0,
+      hour: randInt(6, 14),
+      minute: Math.floor(randInt(0, 45) / 15) * 15
     },
     end: {
-      hour: 0,
-      minute: 0
+      hour: randInt(15, 20),
+      minute: Math.floor(randInt(0, 45) / 15) * 15
     }
   }
 }
@@ -23,15 +26,22 @@ const startBeforeEndHour = (start: { hour: number, minute: number }, end: { hour
   start.hour * 60 + start.minute < end.hour * 60 + end.minute
 
 export default function Event() {
-
   const [loadedEvents, setLoadedEvents] = React.useState<IEvent[]>([])
   const [selectedEvent, setSelectedEvent] = React.useState<IEvent | undefined>(undefined)
+
+
+  React.useEffect(() => {
+    (async () => {
+      const events = (await getAllEvents())
+      setLoadedEvents(events)
+    })()
+  }, [])
 
   const selectEvent = (event: IEvent) => {
     setSelectedEvent(event)
   }
 
-
+  let updating: boolean = false
   const editSelectedEvent = (event: IEvent) => {
     if (event === undefined) {
       console.error("ERROR: Edit selected event somehow got undefined")
@@ -57,13 +67,44 @@ export default function Event() {
     const newEvents = loadedEvents
     newEvents[loadedEvents.findIndex(x => x === selectedEvent)] = event
 
-    setLoadedEvents(newEvents)
-    setSelectedEvent(event)
+    if (!updating) {
+      updating = true
+      updateEvent(selectedEvent ?? event, event)
+        .then(res => {
+          updating = false
+          if ("code" in res)
+            return
+          setLoadedEvents(newEvents)
+          setSelectedEvent(event)
+        })
+
+    }
   }
 
-  const removeEvent = (event: IEvent) => {
-    // TODO: After we add the API functions, make this update only if API call was successful
-    setLoadedEvents(loadedEvents.filter(x => x !== event))
+  const findFreeEventSlot = (): IEvent | undefined => {
+    // TODO: Find free slot
+    return randomEvent()
+  }
+
+  const addEventLocal = () => {
+    const eventToAdd = findFreeEventSlot()
+    if (eventToAdd !== undefined)
+      newEvent(eventToAdd)
+        .then(res => {
+          if ("code" in res)
+            return
+          setLoadedEvents(loadedEvents.concat(eventToAdd))
+        })
+    console.error("No free slots")
+  }
+
+  const removeEventLocal = (event: IEvent) => {
+    removeEvent(event)
+      .then(res => {
+        if ("code" in res)
+          return
+        setLoadedEvents(loadedEvents.filter(x => x !== event))
+      })
   }
 
   const LEventContainer = (data: IEvent) => (
@@ -71,7 +112,7 @@ export default function Event() {
       <button className="event-button" onClick={_ => selectEvent(data)}>
         {data.name}
       </button>
-      <button onClick={_ => removeEvent(data)}> - </button>
+      <button onClick={_ => removeEventLocal(data)}> - </button>
     </div>
   )
 
@@ -92,11 +133,29 @@ export default function Event() {
           onChange={ev => editSelectedEvent({ ...data, name: ev.currentTarget.value })}
           value={data.name}
           type="text" />
-        <div className="flex flex-horizontal">
+        <div className="flex-horizontal">
+          <div>
+            Day:
+          </div>
+          <select
+            value={data.day}
+            onChange={ev => editSelectedEvent({ ...data, day: parseInt(ev.currentTarget.value) }) }
+            name={data.name}
+            id={data.name}>
+            <option value="1">Lunes</option>
+            <option value="2">Martes</option>
+            <option value="3">Miercoles</option>
+            <option value="4">Jueves</option>
+            <option value="5">Viernes</option>
+            <option value="6">Sabado</option>
+            <option value="7">Domingo</option>
+          </select>
+        </div>
+        <div className="flex-horizontal">
           <div>
             Start time:
           </div>
-          <div className="flex flex-horizontal">
+          <div className="flex-horizontal">
             <div>
               Hour:
             </div >
@@ -105,7 +164,7 @@ export default function Event() {
               onChange={ev => editSelectedEvent({ ...data, start: { ...data.start, hour: parseInt(ev.currentTarget.value) } })}
               name={data.name}
               id={data.name}>
-              { generateOptions(6, 20, 1) }
+              {generateOptions(6, 20, 1)}
             </select>
             <div>
               Minute:
@@ -115,7 +174,7 @@ export default function Event() {
               onChange={ev => editSelectedEvent({ ...data, start: { ...data.start, minute: parseInt(ev.currentTarget.value) } })}
               name={data.name}
               id={data.name}>
-              { generateOptions(0, 45, 15) }
+              {generateOptions(0, 45, 15)}
             </select>
           </div>
         </div>
@@ -132,7 +191,7 @@ export default function Event() {
               onChange={ev => editSelectedEvent({ ...data, end: { ...data.end, hour: parseInt(ev.currentTarget.value) } })}
               name={data.name}
               id={data.name}>
-              { generateOptions(6, 20, 1) }
+              {generateOptions(6, 20, 1)}
             </select>
             <div>
               Minute:
@@ -142,32 +201,32 @@ export default function Event() {
               onChange={ev => editSelectedEvent({ ...data, end: { ...data.end, minute: parseInt(ev.currentTarget.value) } })}
               name={data.name}
               id={data.name}>
-              { generateOptions(0, 45, 15) }
+              {generateOptions(0, 45, 15)}
             </select>
           </div>
         </div>
-      </div>
+      </div >
     )
-  }
+}
 
-  return (
-    <SplitLayout>
-      {/* LEFT */}
-      <div className="left-event-container">
-        <button onClick={ev => setLoadedEvents(loadedEvents.concat(randomEvent()))}> + </button>
-        { loadedEvents.map(e => LEventContainer(e)) }
-      </div>
+return (
+  <SplitLayout>
+    {/* LEFT */}
+    <div className="left-event-container">
+      <button onClick={_ => addEventLocal()}> + </button>
+      {loadedEvents.map(e => LEventContainer(e))}
+    </div>
 
-      {/* RIGHT */}
-      <div>
-        {
-          selectedEvent === undefined
-            ? <></>
-            : <div>
-              {REventContainer(selectedEvent)}
-            </div>
-        }
-      </div>
-    </SplitLayout>
-  )
+    {/* RIGHT */}
+    <div>
+      {
+        selectedEvent === undefined
+          ? <></>
+          : <div>
+            {REventContainer(selectedEvent)}
+          </div>
+      }
+    </div>
+  </SplitLayout>
+)
 }

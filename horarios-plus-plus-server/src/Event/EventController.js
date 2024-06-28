@@ -12,6 +12,7 @@ export default class EventController {
 	static async #newEvent(req, res) {
 		const response = await Event.save(
 			req?.query?.day,
+			req?.query?.name,
 			{
 				hour: req?.query?.startHour,
 				minute: req?.query?.startMinute,
@@ -42,6 +43,7 @@ export default class EventController {
 	static async #updateEvent(req, res) {
 		const response = await Event.update(
 			req?.query?.oldDay,
+			req?.query?.oldName,
 			{
 				minute: req?.query?.oldStartMinute,
 				hour: req?.query?.oldStartHour
@@ -52,6 +54,7 @@ export default class EventController {
 			},
 
 			req?.query?.newDay ?? req?.query?.oldDay,
+			req?.query?.newName ?? req?.query?.oldName,
 			{
 				minute: req?.query?.newStartMinute ?? req?.query?.oldStartMinute,
 				hour: req?.query?.newStartHour ?? req?.query?.oldStartHour
@@ -62,8 +65,9 @@ export default class EventController {
 			},
 		)
 		if ("code" in response)
+			console.error(response)
+		else
 			console.log(response)
-
 		res?.send(response)
 		return response
 	}
@@ -72,6 +76,7 @@ export default class EventController {
 	static async #deleteEvent(req, res) {
 		const response = await Event.delete(
 			req?.query?.day,
+			req?.query?.name,
 			{
 				minute: req?.query?.startMinute,
 				hour: req?.query?.startHour

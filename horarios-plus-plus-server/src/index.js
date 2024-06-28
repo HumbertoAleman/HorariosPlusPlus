@@ -18,10 +18,11 @@ async function run() {
 
 run().catch(console.dir);
 
+let corsOptions = { origin: "*", }
+app.use(cors(corsOptions))
 Router.routeToApp(app)
 
-app
-	.use(cors({ origin: "*" }))
-	.listen(port, () => {
-		console.log(`Example app listening on port ${port}`)
-	})
+app.listen(port, () => {
+	console.log(`Listening on port ${port}`)
+})
+
