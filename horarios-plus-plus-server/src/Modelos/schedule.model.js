@@ -1,5 +1,5 @@
 import mongoose from "mongoose"
-import User from "./user.model"
+import User from "./user.model.js"
 
 export default class Schedule {
 	static #schema = new mongoose.Schema({

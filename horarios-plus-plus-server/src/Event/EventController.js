@@ -1,4 +1,4 @@
-import Event from "../../models/event.model.js"
+import Event from "../Modelos/event.model.js"
 
 export default class EventController {
 	// NOTE: CREATE

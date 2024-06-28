@@ -2,7 +2,7 @@ import express from 'express';
 import cors from "cors"
 import mongoose from 'mongoose';
 
-import subjectRoutes from './routes/subject/subject.routes.js';
+import Router from './Rutas/router.js';
 
 const app = express()
 const port = 4000
@@ -18,7 +18,7 @@ async function run() {
 
 run().catch(console.dir);
 
-subjectRoutes(app)
+Router.routeToApp(app)
 
 app
 	.use(cors({ origin: "*" }))

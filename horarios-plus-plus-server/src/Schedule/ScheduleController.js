@@ -1,4 +1,4 @@
-import Schedule from "../../models/schedule.model.js"
+import Schedule from "../Modelos/schedule.model.js"
 
 export default class ScheduleController {
 	// NOTE: CREATE

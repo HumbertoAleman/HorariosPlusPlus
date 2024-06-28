@@ -1,4 +1,4 @@
-import User from "../../models/user.model.js"
+import User from "../Modelos/user.model.js"
 
 export default class UserController {
 	// NOTE: CREATE

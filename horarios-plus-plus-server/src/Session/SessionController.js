@@ -1,8 +1,15 @@
-import Session from "../../models/session.model.js"
+import Session from "../Modelos/session.model.js"
 
 export default class SessionController {
+	static routeToApp(app) {
+		app.get("/api/sessions/newSession", (req, res) => SessionController.#newSession(req, res))
+		app.get("/api/sessions/getSessions", (req, res) => SessionController.#getSessions(req, res))
+		app.get("/api/sessions/updateSession", (req, res) => SessionController.#updateSession(req, res))
+		app.get("/api/sessions/deleteSession", (req, res) => SessionController.#deleteSession(req, res))
+	}
+
 	// NOTE: CREATE
-	static async newSession(req, res) {
+	static async #newSession(req, res) {
 		const response = await Session.save(
 			req?.query?.day,
 			{
@@ -24,7 +31,7 @@ export default class SessionController {
 	}
 
 	// NOTE: READ
-	static async getSessions(req, res) {
+	static async #getSessions(req, res) {
 		const response = await Session.get(req?.query?.nrc)
 		if ("code" in response)
 			console.log(response)
@@ -34,7 +41,7 @@ export default class SessionController {
 	}
 
 	// NOTE: UPDATE
-	static async updateSession(req, res) {
+	static async #updateSession(req, res) {
 		const response = await Session.update(
 			req?.query?.oldDay,
 			{
@@ -67,7 +74,7 @@ export default class SessionController {
 	}
 
 	// NOTE: DELETE
-	static async deleteSession(req, res) {
+	static async #deleteSession(req, res) {
 		const mongoId = req?.query?.id
 		const response = mongoId !== undefined
 			? await Session.deleteById()
