@@ -7,14 +7,15 @@ export default class User {
 		_id: mongoose.Schema.Types.ObjectId,
 		email: { type: String, require: true, unique: true },
 		password: { type: String, require: true, unique: false },
-		id: { type: String, require: true, unique: true },
-		type: { type: String, require: true, unique: false },
+		cedula: { type: String, require: true, unique: true },
+		permissionLevel: { type: String, require: true, unique: false },
 		schedule: { type: mongoose.Schema.Types.ObjectId, require: false, unique: false, ref: "Schedule" }
 	})
 
 	static #model = mongoose.model("User", User.#schema)
 
-	static findOne = async (id) => User.#model.findOne({ id: id })
+	static findAll = async () => User.#model.find()
+	static findOne = async (id) => User.#model.findOne({ cedula: id })
 	static findOneEmail = async (email) => User.#model.findOne({ email: email })
 	static finyByIdAndUpdate = async (id, newData) =>
 		await User.#model.findByIdAndUpdate(id, newData, { new: true })
@@ -22,9 +23,9 @@ export default class User {
 	static finyByIdAndDelete = async (id) =>
 		await User.#model.findByIdAndDelete(id)
 	static findAndDelete = async (id) =>
-		await User.#model.findOneAndDelete({ id: id })
+		await User.#model.findOneAndDelete({ cedula: id })
 
-	static checkIfExists = async (id) => User.#model.exists({ id: id })
+	static checkIfExists = async (id) => User.#model.exists({ cedula: id })
 	static checkIfIdExists = async (id) => User.#model.findById(id).then(res => res !== null && res !== undefined)
 
 	static dropDb = async () => await mongoose.connection.collections.users.drop()
@@ -41,34 +42,39 @@ export default class User {
 		if (await User.checkIfExists(userId))
 			return { message: "ERROR a user with this id " + userId + " already exists", code: 0 }
 
-		let type
+		let selectedType
 		switch (userType) {
-			case "alumno":
-				type = "alumno"
+			case "estudiante":
+				selectedType = "estudiante"
 				break;
 			case "profesor":
-				type = "profesor"
+				selectedType = "profesor"
 				break;
 			case "organizador":
-				type = "organizador"
+				selectedType = "organizador"
 				break;
 			case "admin":
-				type = "admin"
+				selectedType = "admin"
 				break;
 			default:
 				return { message: "ERROR userType cannot be undefined", code: 0 }
 		}
 
 		const createdUser = new User.#model({
-			_id: new mongoose.mongo.ObjectId(),
+			_id: new ObjectId(),
 			email: userEmail,
 			password: userPassword,
-			type: type,
-			id: userId
+			permissionLevel: selectedType,
+			cedula: userId
 		})
+		console.log(createdUser)
 		const savedUser = await createdUser.save();
 
 		return savedUser
+	}
+
+	static getAll = async () => {
+		return await User.findAll()
 	}
 
 	static getById = async (id) => {
@@ -120,7 +126,7 @@ export default class User {
 			email: newEmail ?? toUpdate.email,
 			password: newPassword ?? toUpdate.password,
 			scheduleId: new ObjectId(newSchedule ?? toUpdate.schedule),
-			type: newType ?? toUpdate.type,
+			permissionLevel: newType ?? toUpdate.permissionLevel,
 		})
 
 		return updatedUser

@@ -14,7 +14,7 @@ export default class UserController {
 			req?.query?.type,
 			req?.query?.email,
 			req?.query?.password,
-			req?.query?.id,
+			req?.query?.cedula,
 		)
 
 		if ("code" in response)
@@ -32,8 +32,12 @@ export default class UserController {
 		if (userEmail !== undefined && response === undefined)
 			response = await User.getByEmail(userEmail)
 
-		if (response === undefined)
+		const userId = req?.query?.id
+		if (userId !== undefined && response === undefined)
 			response = await User.getById(req?.query?.id)
+
+		if (response === undefined)
+			response = await User.getAll()
 
 		if ("code" in response)
 			console.log(response.message)
@@ -44,7 +48,7 @@ export default class UserController {
 
 	static async #updateUser(req, res) {
 		const response = await User.update(
-			req?.query?.id,
+			req?.query?.cedula,
 			req?.query?.schedule,
 			req?.query?.password,
 			req?.query?.email,
@@ -59,7 +63,7 @@ export default class UserController {
 
 	// NOTE: DELETE
 	static async #deleteUser(req, res) {
-		const response = await User.delete(req?.query?.id)
+		const response = await User.delete(req?.query?.cedula)
 		if ("code" in response)
 			console.log(response.message)
 
