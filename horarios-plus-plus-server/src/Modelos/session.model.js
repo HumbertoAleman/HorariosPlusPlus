@@ -12,12 +12,12 @@ export default class Session {
 	static #schema = new mongoose.Schema({
 		_id: mongoose.Schema.Types.ObjectId,
 		start: {
-			minute: { type: Number, required: true },
 			hour: { type: Number, required: true },
+			minute: { type: Number, required: true },
 		},
 		end: {
-			minute: { type: Number, required: true },
 			hour: { type: Number, required: true },
+			minute: { type: Number, required: true },
 		},
 		day: { type: Number, required: true },
 		section: { type: mongoose.Schema.Types.ObjectId, ref: "Section" }
@@ -27,6 +27,9 @@ export default class Session {
 	static findById = async (id) => await Session.#model.findById(id)
 	static findByIdAndUpdate = async (id, newData) =>
 		await Session.#model.findByIdAndUpdate(id, newData, { new: true })
+
+	static findOneAndDelete = async (data) =>
+		await Session.#model.findOneAndDelete(data)
 	static findByIdAndDelete = async (id) =>
 		await Session.#model.findByIdAndDelete(id)
 
@@ -47,13 +50,23 @@ export default class Session {
 
 		if (sessionStart.minute === undefined || sessionStart.hour === undefined)
 			return { message: "ERROR sessionStart is undefined", code: 0 }
+		sessionStart.hour = parseInt(sessionStart.hour)
+		sessionStart.minute = parseInt(sessionStart.minute)
+
 		if (sessionEnd.minute === undefined || sessionEnd.hour === undefined)
 			return { message: "ERROR sessionEnd is undefined", code: 0 }
+		sessionEnd.hour = parseInt(sessionEnd.hour)
+		sessionEnd.minute = parseInt(sessionEnd.minute)
+
+		console.log(sessionStart)
+		console.log(sessionEnd)
+
 		if (sessionStart.hour * 60 + sessionStart.minute >= sessionEnd.hour * 60 + sessionEnd.minute)
 			return { message: "ERROR start cannot be equal to/before end", code: 0 }
 
 		if (sessionDay === undefined)
 			return { message: "ERROR sessionDay is undefined", code: 0 }
+		sessionDay = parseInt(sessionDay)
 
 		const sessionList = []
 		for (const sessionId of section.sessions)
@@ -83,7 +96,8 @@ export default class Session {
 		const updatedSection = await Section.byIdAddSession(section._id, newSession._id)
 
 		// We want to remove all of the schedules that contain the modified section
-		await Schedule.deleteMany({ sections: new ObjectId(updatedSection._id) })
+		// TODO: READD THIS WHEN WE IMPLEMENT SCHEDULES
+		// await Schedule.deleteMany({ sections: new ObjectId(updatedSection._id) })
 
 		return savedSession
 	}
@@ -110,26 +124,51 @@ export default class Session {
 
 		if (sectionNrc === undefined)
 			return { message: "ERROR sectionNrc is undefined", code: 0 }
+		sectionNrc = parseInt(sectionNrc)
+
 		if (await Section.checkIfExists(sectionNrc).then(res => !res))
 			return { message: "ERROR NRC " + sectionNrc + " does not exist", code: 0 }
 		const section = await Section.findOne(sectionNrc)
 
 		if (oldSessionStart.minute === undefined || oldSessionStart.hour === undefined)
 			return { message: "ERROR oldSessionStart is undefined", code: 0 }
+		oldSessionStart.hour = parseInt(oldSessionStart.hour)
+		oldSessionStart.minute = parseInt(oldSessionStart.minute)
+
 		if (oldSessionEnd.minute === undefined || oldSessionEnd.hour === undefined)
 			return { message: "ERROR oldSessionEnd is undefined", code: 0 }
+		oldSessionEnd.hour = parseInt(oldSessionEnd.hour)
+		oldSessionEnd.minute = parseInt(oldSessionEnd.minute)
+
 		if (oldSessionDay === undefined)
 			return { message: "ERROR oldSessionDay is undefined", code: 0 }
+		oldSessionDay = parseInt(oldSessionDay)
+
+		newSessionStart.hour = parseInt(newSessionStart.hour)
+		newSessionStart.minute = parseInt(newSessionStart.minute)
+		newSessionEnd.hour = parseInt(newSessionEnd.hour)
+		newSessionEnd.minute = parseInt(newSessionEnd.minute)
+		newSessionDay = parseInt(newSessionDay)
 
 		if ((newSessionStart.hour * 60 + newSessionStart.minute) >=
 			(newSessionEnd.hour * 60 + newSessionEnd.minute))
 			return { message: "ERROR start cannot be equal to/before end", code: 0 }
 
+		console.log(oldSessionDay)
+		console.log(oldSessionStart)
+		console.log(oldSessionEnd)
+
 		const oldSession = await Session.findOne({
 			day: oldSessionDay,
-			start: oldSessionStart,
-			end: oldSessionEnd,
-			section: new mongoose.mongo.ObjectId(section._id)
+			start: {
+				hour: oldSessionStart.hour,
+				minute: oldSessionStart.minute,
+			},
+			end: {
+				hour: oldSessionEnd.hour,
+				minute: oldSessionEnd.minute,
+			},
+			section: new ObjectId(section._id)
 		})
 		if (oldSession === undefined || oldSession === null)
 			return { message: "ERROR session was not found", code: 0 }
@@ -146,12 +185,19 @@ export default class Session {
 
 		const updatedSession = await Session.findByIdAndUpdate(oldSession._id, {
 			day: newSessionDay,
-			start: newSessionStart,
-			end: newSessionEnd,
+			start: {
+				hour: newSessionStart.hour,
+				minute: newSessionStart.minute,
+			},
+			end: {
+				hour: newSessionEnd.hour,
+				minute: newSessionEnd.minute,
+			},
 		})
 
 		// We want to remove all of the schedules that contain the modified session
-		const schedulesToDelete = await Schedule.deleteMany({ sections: new mongoose.mongo.ObjectId(updatedSession.section) })
+		// TODO: READD WHEN ADDING SCHEDULE FUNCTIONALITY
+		// const schedulesToDelete = await Schedule.deleteMany({ sections: new mongoose.mongo.ObjectId(updatedSession.section) })
 
 		return updatedSession
 	}
@@ -159,28 +205,45 @@ export default class Session {
 	static delete = async (sessionDay, sessionStart, sessionEnd, sectionNrc) => {
 		if (sectionNrc === undefined)
 			return { message: "ERROR sessionNRC is undefined", code: 0 }
+		sectionNrc = parseInt(sectionNrc)
+
 		if (await Section.checkIfExists(sectionNrc).then(res => !res))
-			return { message: "ERROR session with nrc " + nrc + " does not exist", code: 0 }
-		const sectionToUpdate = await Section.findOne({ nrc: sectionNrc })
+			return { message: "ERROR session with nrc " + sectionNrc + " does not exist", code: 0 }
+		const sectionToUpdate = await Section.findOne(sectionNrc)
 
 		if (sessionStart.minute === undefined || sessionStart.hour === undefined)
 			return { message: "ERROR sessionStart is undefined", code: 0 }
+		sessionStart.hour = parseInt(sessionStart.hour)
+		sessionStart.minute = parseInt(sessionStart.minute)
+
 		if (sessionEnd.minute === undefined || sessionEnd.hour === undefined)
 			return { message: "ERROR sessionEnd is undefined", code: 0 }
+		sessionEnd.hour = parseInt(sessionEnd.hour)
+		sessionEnd.minute = parseInt(sessionEnd.minute)
+
 		if (sessionDay === undefined)
 			return { message: "ERROR sessionDay is undefined", code: 0 }
+		sessionDay = parseInt(sessionDay)
 
 		const deletedData = await Session.findOneAndDelete({
 			day: sessionDay,
-			start: sessionStart,
-			end: sessionEnd,
+			start: {
+				hour: sessionStart.hour,
+				minute: sessionStart.minute,
+			},
+			end: {
+				hour: sessionEnd.hour,
+				minute: sessionEnd.minute,
+			},
 			section: new ObjectId(sectionToUpdate._id)
 		})
 		if (deletedData === undefined || deletedData === null)
 			return { message: "ERROR could not find session to delete", code: 0 }
 
 		Section.byIdRemoveSession(sectionToUpdate._id, deletedData._id)
-		await Schedule.deleteMany({ sections: new ObjectId(deletedData.section) })
+
+		// TODO: when adding schedule functionality add this back
+		// await Schedule.deleteMany({ sections: new ObjectId(deletedData.section) })
 
 		return deletedData
 	}

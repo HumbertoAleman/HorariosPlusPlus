@@ -12,6 +12,7 @@ export default class Subject {
 	static #model = mongoose.model("Subject", Subject.#schema)
 
 	static find = async (name) => await Subject.#model.find({ name: name })
+	static getAll = async () => await Subject.#model.find()
 	static findOne = async (name) => await Subject.#model.findOne({ name: name })
 	static findById = async (id) => await Subject.#model.findById(id)
 
@@ -34,7 +35,7 @@ export default class Subject {
 	static byIdRemoveSection = async (subjectId, sectionId) =>
 		await Subject.#model.findByIdAndUpdate(
 			subjectId, {
-			sections: await Subject.findOne(subjectName).then(res =>
+			sections: await Subject.findById(subjectId).then(res =>
 				res.sections.filter(otherId => !otherId.equals(sectionId)))
 		})
 
@@ -83,7 +84,7 @@ export default class Subject {
 	// NOTE: READ
 	static get = async (name) => {
 		if (name === undefined)
-			return []
+			return await Subject.getAll()
 		return await Subject.findOne(name)
 	}
 

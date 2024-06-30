@@ -66,8 +66,7 @@ export default class EventController {
 		)
 		if ("code" in response)
 			console.error(response)
-		else
-			console.log(response)
+
 		res?.send(response)
 		return response
 	}

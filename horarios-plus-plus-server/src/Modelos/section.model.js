@@ -76,7 +76,7 @@ export default class Section {
 			_id: new ObjectId(),
 			nrc: nrc ?? await Section.countSections().then(res => parseInt(res)),
 			teacher: teacher ?? "Por Asignar",
-			sessions: sessions?.split(',') ?? [],
+			sessions: sessions === "" ? [] : sessions.split(","),
 			subject: await Subject.findOne(subject).then(res => new ObjectId(res._id))
 		})
 		const createdSection = await newSection.save()
@@ -92,11 +92,13 @@ export default class Section {
 
 	// NOTE: READ
 	static getFromSubject = async (subjectId) => {
-		if (nrc === undefined)
+		if (subjectId === undefined)
 			return []
 		const sections = []
 		for (const sectionId of await Subject.findById(subjectId).then(res => res.sections))
 			sections.push(await Section.findById(sectionId))
+		console.log(sections)
+		return sections
 	}
 
 	static getByNrc = async (nrc) => {
@@ -133,10 +135,12 @@ export default class Section {
 
 	// NOTE: DELETE
 	static #editAffected = async (sectionObject) => {
-		Subject.byIdRemoveSection(sectionObject.subject, deletedData._id)
+		Subject.byIdRemoveSection(sectionObject.subject, sectionObject._id)
 		for (const sessionId of sectionObject.sessions)
 			await Session.findByIdAndDelete(sessionId)
-		await Schedule.deleteMany({ sections: sectionObject._id })
+
+		// TODO: Readd the deleteMany to sections when that functionality wil be applied
+		// await Schedule.deleteMany({ sections: sectionObject._id })
 	}
 
 	static delete = async (nrc) => {

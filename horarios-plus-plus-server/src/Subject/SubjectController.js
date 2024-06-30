@@ -21,8 +21,8 @@ export default class SubjectController {
 	// NOTE: READ
 	static async #getSubject(req, res) {
 		const response = await Subject.get(req?.query?.name)
-		if ("code" in response)
-			console.log(response.message)
+		if ("code" in response) console.log(response.message)
+		else console.log(response)
 
 		res?.send(response)
 		return response

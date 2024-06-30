@@ -26,7 +26,7 @@ export default class SectionController {
 
 	// NOTE: READ
 	static async #getSection(req, res) {
-		let response
+		let response = undefined
 
 		const subjectId = req?.query?.subject
 		if (subjectId !== undefined)
