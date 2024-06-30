@@ -23,6 +23,22 @@ const newSection = async (subject: ISubject): Promise<any> => {
         })
 }
 
+const getSectionsFromSectionId = async (id: string): Promise<any> => {
+    const endPointFunction = "getSection"
+    const request = createRequest([
+        { name: "id", value: id },
+    ])
+
+    return fetch(httpString + apiEndpoint + endPointFunction + request, headers)
+        .then(response => response.json())
+        .then(async data => {
+            for (const section of Array.of(data)) {
+                section.sessions = await getSessionsOfSection(section)
+            }
+            return data
+        })
+}
+
 const getSectionsFromSubjectID = async (subject: ISubject, id: string): Promise<any> => {
     const endPointFunction = "getSection"
     const request = createRequest([
@@ -70,4 +86,4 @@ const removeSection = async (section: ISection) => {
 }
 
 
-export { newSection, getSectionsFromSubjectID, updateSection, removeSection }
+export { newSection, getSectionsFromSectionId, getSectionsFromSubjectID, updateSection, removeSection }

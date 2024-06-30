@@ -6,4 +6,5 @@ export default interface ISection {
   teacher: string,
   subject: ISubject,
   sessions: ISession[],
+  enabled?: boolean
 }

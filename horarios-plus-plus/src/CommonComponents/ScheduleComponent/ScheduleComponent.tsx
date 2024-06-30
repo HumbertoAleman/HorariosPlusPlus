@@ -8,7 +8,7 @@ import ISession from "../Interfaces/ISession.ts"
 import ISection from "../Interfaces/ISection.ts"
 
 const daysOfWeek = ["Lunes", "Martes", "Miercoles", "Jueves", "Viernes", "Sabado", "Domingo"]
-const hours = [7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
+const hours = [6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20]
 const minutes = [0, 15, 30, 45]
 
 export default function ScheduleComponent({ schedule }: { schedule: ISchedule }) {
@@ -37,11 +37,9 @@ export default function ScheduleComponent({ schedule }: { schedule: ISchedule })
             }
 
             const sessionToAdd = sessionsFromDay.find(x => x.start.hour === hour && x.start.minute === minute)
-            console.log(sessionToAdd)
             if (sessionToAdd !== undefined) {
               toSkip = ((sessionToAdd.end.hour * 60 + sessionToAdd.end.minute)
                 - (sessionToAdd.start.hour * 60 + sessionToAdd.start.minute)) / 15
-                console.log()
               return <div style={{ backgroundColor: "blue", gridRow: toSkip + 1 + " span" }}>
                 {sessionToAdd.section.nrc}
               </div>

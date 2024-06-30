@@ -8,6 +8,7 @@ import ISubject from  "../../CommonComponents/Interfaces/ISubject.ts"
 import IEvent from    "../../CommonComponents/Interfaces/IEvent.ts"
 import ISession from  "../../CommonComponents/Interfaces/ISession.ts"
 import ISection from  "../../CommonComponents/Interfaces/ISection.ts"
+import { getFromUser } from "../../API_Functions/schedules.ts";
 
 const randInt = (from: number, to: number): number => Math.floor(Math.random() * (to - from)) + from
 
@@ -53,9 +54,19 @@ const randomSession = (section: ISection): ISession => {
 }
 
 export default function MySchedule() {
+  const [loadedSchedule, setLoadedSchedule] = React.useState<ISchedule | undefined>(undefined)
+
+
+  React.useEffect(() => {
+    (async () => {
+      const schedule = await getFromUser("123")
+      setLoadedSchedule(schedule)
+    })()
+  }, [])
+
   return (
     <SingleLayout>
-      <ScheduleComponent schedule={ randomSchedule() }/>
+      { loadedSchedule !== undefined ? <ScheduleComponent schedule={ loadedSchedule }/> : <></> }
     </SingleLayout>
   )
 }

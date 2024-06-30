@@ -17,8 +17,11 @@ export default class User {
 	static findAll = async () => User.#model.find()
 	static findOne = async (id) => User.#model.findOne({ cedula: id })
 	static findOneEmail = async (email) => User.#model.findOne({ email: email })
-	static finyByIdAndUpdate = async (id, newData) =>
+
+	static findByIdAndUpdate = async (id, newData) =>
 		await User.#model.findByIdAndUpdate(id, newData, { new: true })
+	static findAndUpdate = async (id) =>
+		await User.#model.findOneAndDelete({ cedula: id })
 
 	static finyByIdAndDelete = async (id) =>
 		await User.#model.findByIdAndDelete(id)
@@ -122,7 +125,7 @@ export default class User {
 				break;
 		}
 
-		const updatedUser = await User.finyByIdAndUpdate(toUpdate._id, {
+		const updatedUser = await User.findByIdAndUpdate(toUpdate._id, {
 			email: newEmail ?? toUpdate.email,
 			password: newPassword ?? toUpdate.password,
 			scheduleId: new ObjectId(newSchedule ?? toUpdate.schedule),

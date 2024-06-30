@@ -1,17 +1,21 @@
 import mongoose from "mongoose"
+const ObjectId = mongoose.Types.ObjectId
+
 import User from "./user.model.js"
+import Section from "./section.model.js"
+import Session from "./session.model.js"
 
 export default class Schedule {
 	static #schema = new mongoose.Schema({
 		_id: mongoose.Schema.Types.ObjectId,
 		owner: { type: mongoose.Schema.Types.ObjectId, require: true, unique: true },
-		sections: [{ type: mongoose.Schema.Types.ObjectId, ref: "Section" }],
+		blocks: [{ type: mongoose.Schema.Types.ObjectId, ref: "Session" }],
 	})
 
 	static #model = mongoose.model("Schedule", Schedule.#schema)
 
+	static findById = async (id) => await Schedule.#model.findById(id)
 	static findByIdAndDelete = async (id) => await Schedule.#model.findByIdAndDelete(id)
-
 
 	static async #generateCombinations(sectionList, subjectCount) {
 		function hoursIntersect(start_x, end_x, start_y, end_y) {
@@ -61,7 +65,7 @@ export default class Schedule {
 
 		let sectionList = []
 		for (const nrc of nrcs.split(","))
-			sectionList.push(Section.find({ nrc: nrc }))
+			sectionList.push(Section.find(nrc))
 		sectionList = await Promise.all(sectionList).then(res => res.flat())
 
 		const schedules = Schedule.#generateCombinations(sectionList, [...new Set(sectionList.map(section => section.subject.toString()))].length)
@@ -69,9 +73,51 @@ export default class Schedule {
 		return schedules
 	}
 
+	static assignSchedule = async (cedula, ids) => {
+		if (ids === undefined)
+			return { message: "ERROR ids is undefined", code: 0 }
+		if (cedula === undefined)
+			return { message: "ERROR cedula is undefined", code: 0 }
+
+		const user = await User.findOne(cedula)
+		if (user === undefined || user === null)
+			return { message: "There is no user with cedula " + cedula, code: 0 }
+
+		await this.deleteByOwnerId(user.cedula)
+
+		const toSave = Schedule.#model({
+			_id: new ObjectId(),
+			owner: new ObjectId(user._id),
+			blocks: ids.split(",")
+		})
+		const savedSchedule = await toSave.save()
+		console.log(savedSchedule)
+
+		const updatedUser = User.findByIdAndUpdate(user._id, { schedule: toSave._id })
+		if (updatedUser === undefined || updatedUser === null)
+			return { message: "Could not update user " + user.email, code: 0 }
+
+		return savedSchedule
+	}
+
+	static getScheduleFromUser = async (userCedula) => {
+		if (userCedula === undefined)
+			return { message: "ERROR userCedula cannot be undefined" }
+
+		if (await User.checkIfExists(userCedula).then(res => !res))
+			return { message: "ERROR user with id " + userCedula + " was not found", code: 0 }
+		const foundUser = await User.findOne(userCedula)
+
+		const foundSchedule = await Schedule.findById(foundUser.schedule)
+		if (foundSchedule === null || foundSchedule === undefined)
+			return { message: "ERROR mongoId provided but schedule not found", code: 0 }
+
+		return foundSchedule
+	}
+
 	static deleteById = async (id) => {
 		if (id !== undefined)
-			return { message: "" }
+			return { message: "ERROR: id cannot be undefined", code: 0 }
 
 		const foundSchedule = await Schedule.findById(id)
 		if (foundSchedule === null || foundSchedule === undefined)
@@ -87,6 +133,8 @@ export default class Schedule {
 
 		if (await User.checkIfExists(ownerId).then(res => !res))
 			return { message: "ERROR user with id " + ownerId + " was not found", code: 0 }
+		const foundUser = await User.findOne(ownerId)
+		
 		if (foundUser.schedule === undefined || foundUser.schedule === null)
 			return { message: "ERROR this user does not have a schedule", code: 0 }
 		const deletedSchedule = await Schedule.findByIdAndDelete(foundUser.schedule)
