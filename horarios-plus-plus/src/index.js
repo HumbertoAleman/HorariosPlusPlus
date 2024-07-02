@@ -30,7 +30,7 @@ export default function App() {
           <Route path="events" element={<Event/>}/>
           <Route path="permissions" element={<Permissions/>}/>
           <Route path="intersection" element={<Intersection/>}/>
-          <Route path="404" element={<NotFoundInterface/>}/>
+          <Route path="*" element={<NotFoundInterface/>}/>
         </Route>
       </Routes>
     </BrowserRouter>

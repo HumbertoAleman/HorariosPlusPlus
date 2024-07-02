@@ -1,6 +1,8 @@
 import React from "react";
 import NavBar from "../../CommonComponents/NavBar/NavBar.tsx";
 
+import svg from "../../resources/images/404.svg"
+
 import "./NotFoundStyle.css";
 
 export default function NotFoundInterface() {
@@ -23,8 +25,7 @@ export default function NotFoundInterface() {
         </div>
 
         <div>
-          image go here
-
+          <img style={{ position: "absolute", bottom: "0", left: "0", width: "100vw"}} src={svg} alt="IMAGE NOT FOUND" />
         </div>
       </div>
     </div>

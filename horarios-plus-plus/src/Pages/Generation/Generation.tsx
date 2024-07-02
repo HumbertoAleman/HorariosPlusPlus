@@ -12,7 +12,7 @@ import ISection from "../../CommonComponents/Interfaces/ISection.ts";
 import ISchedule from "../../CommonComponents/Interfaces/ISchedule.ts";
 
 let index = 0
-const toShow = 1
+const toShow = 2
 
 export default function Generation() {
   const [shownSchedules, setShownSchedules] = React.useState<ISchedule[]>([])
