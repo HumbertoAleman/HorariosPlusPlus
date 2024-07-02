@@ -9,4 +9,5 @@ export default interface IEvent {
     hour: number,
     minute: number,
   },
+  enabled?: boolean
 }

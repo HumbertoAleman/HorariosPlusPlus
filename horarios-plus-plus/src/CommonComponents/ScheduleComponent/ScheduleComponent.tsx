@@ -16,15 +16,36 @@ export default function ScheduleComponent({ schedule }: { schedule: ISchedule })
     return hours.map(hour =>
       minutes.map(minute =>
         minute === 0
-          ? <div style={{ gridRow: "span 4" }}> { hour } - { hour + 1 } </div>
+          ? <div style={{ gridRow: "span 4" }}> {hour} - {hour + 1} </div>
           : <></>
       ))
+  }
+
+  const blocksCollide = (x: ISession | IEvent, y: ISession | IEvent) => {
+    return (x.start.hour * 60 + x.start.minute <= y.end.hour * 60 + y.end.minute &&
+      y.start.hour * 60 + y.start.minute <= x.end.hour * 60 + x.end.minute)
   }
 
   const generateDay = (day: number) => {
     let toSkip: number = 0
     const eventsFromDay: IEvent[] = schedule.blocks.filter(x => "name" in x && x.day === day) as IEvent[]
     const sessionsFromDay: ISession[] = schedule.blocks.filter(x => !("name" in x) && x.day === day) as ISession[]
+
+    // Make an algorithm that creates 2 arrays, one with the events that can go in the schedule
+    // and one with events that cannot
+    // Both events and Sessions have DAY, START.MINUTE START.HOUR, END.MINUTE END.HOUR
+    // If one session intersects with one event, the event is discarded, if all sessions were checked
+    // and the event hasnt collided, push it to the other array :)
+
+    const nonIncludedEvents = [] as IEvent[]
+    const includedEvents = [] as IEvent[]
+    for (const event of eventsFromDay) {
+      if (sessionsFromDay.some(x => blocksCollide(x, event))) {
+        nonIncludedEvents.push(event)
+        continue
+      }
+      includedEvents.push(event)
+    }
 
     return (
       <>
@@ -45,11 +66,11 @@ export default function ScheduleComponent({ schedule }: { schedule: ISchedule })
               </div>
             }
 
-            const eventToAdd = eventsFromDay.find(x => x.start.hour === hour && x.start.minute === minute)
+            const eventToAdd = includedEvents.find(x => x.start.hour === hour && x.start.minute === minute)
             if (eventToAdd !== undefined) {
               toSkip = ((eventToAdd.end.hour * 60 + eventToAdd.end.minute)
                 - (eventToAdd.start.hour * 60 + eventToAdd.start.minute)) / 15
-              return <div style={{ backgroundColor: "blue", gridRow: toSkip + " span" }}>
+              return <div style={{ backgroundColor: "blue", gridRow: toSkip + 1 + " span" }}>
                 {eventToAdd.name}
               </div>
             }
@@ -64,8 +85,7 @@ export default function ScheduleComponent({ schedule }: { schedule: ISchedule })
   return (
     <div className="schedule-component">
       <div> Hours </div>
-      { numberRow() }
-
+      {numberRow()}
       { generateDay(1) }
       { generateDay(2) }
       { generateDay(3) }

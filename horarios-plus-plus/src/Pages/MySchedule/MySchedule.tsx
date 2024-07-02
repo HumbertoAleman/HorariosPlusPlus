@@ -56,7 +56,6 @@ const randomSession = (section: ISection): ISession => {
 export default function MySchedule() {
   const [loadedSchedule, setLoadedSchedule] = React.useState<ISchedule | undefined>(undefined)
 
-
   React.useEffect(() => {
     (async () => {
       const schedule = await getFromUser("123")
