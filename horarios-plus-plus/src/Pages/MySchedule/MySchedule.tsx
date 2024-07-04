@@ -4,15 +4,15 @@ import SingleLayout from "../../Layouts/Single/SingleLayout.tsx"
 import ScheduleComponent from "../../CommonComponents/ScheduleComponent/ScheduleComponent.tsx"
 
 import ISchedule from "../../CommonComponents/Interfaces/ISchedule.ts"
-import ISubject from  "../../CommonComponents/Interfaces/ISubject.ts"
-import IEvent from    "../../CommonComponents/Interfaces/IEvent.ts"
-import ISession from  "../../CommonComponents/Interfaces/ISession.ts"
-import ISection from  "../../CommonComponents/Interfaces/ISection.ts"
+import ISubject from "../../CommonComponents/Interfaces/ISubject.ts"
+import IEvent from "../../CommonComponents/Interfaces/IEvent.ts"
+import ISession from "../../CommonComponents/Interfaces/ISession.ts"
+import ISection from "../../CommonComponents/Interfaces/ISection.ts"
 import { getFromUser } from "../../API_Functions/schedules.ts";
 
 const randInt = (from: number, to: number): number => Math.floor(Math.random() * (to - from)) + from
 
-const randomSchedule = ():ISchedule => {
+const randomSchedule = (): ISchedule => {
   return {
     blocks: randomSubject().sections[0].sessions
   }
@@ -65,7 +65,7 @@ export default function MySchedule() {
 
   return (
     <SingleLayout>
-      { loadedSchedule !== undefined ? <ScheduleComponent schedule={ loadedSchedule }/> : <></> }
+      {loadedSchedule !== undefined ? <ScheduleComponent schedule={loadedSchedule} /> : <div> LOADING </div>}
     </SingleLayout>
   )
 }

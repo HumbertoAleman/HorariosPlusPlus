@@ -26,7 +26,7 @@ export default function SignUp() {
     <SingleLayout>
       <div className="main-container">
         <div className="login-container flex-vertical">
-          <div className="title-white">
+          <div className="title-white-signup">
             Horarios Plus Plus
           </div>
           <div className="flex-horizontal flex-center">
@@ -35,13 +35,15 @@ export default function SignUp() {
           <div className="flex-horizontal flex-center">
             <input onChange={ev => handleUserChange({ ...userToCreate, email: ev.currentTarget.value })} value={userToCreate.email} className="field" placeholder="Correo electronico" type="email" id="fname" name="fname" />
           </div>
-          <select onChange={ev => handleUserChange({ ...userToCreate, permissionLevel: ev.currentTarget.value as "" | "estudiante" | "profesor" | "organizador" | "administrador" })} value={userToCreate.permissionLevel} className="account-type-dropdown" name="Tipo de cuenta" id="cuenta">
-            <option value="">Seleccione Una Opcion...</option>
-            <option value="estudiante">Estudiante</option>
-            <option value="profesor">Profesor</option>
-            <option value="organizador">Organizador</option>
-            <option value="administrador">Administrador</option>
-          </select>
+          <div className="dropdown-menu">
+            <select onChange={ev => handleUserChange({ ...userToCreate, permissionLevel: ev.currentTarget.value as "" | "estudiante" | "profesor" | "organizador" | "administrador" })} value={userToCreate.permissionLevel} className="account-type-dropdown" name="Tipo de cuenta" id="cuenta">
+              <option value="">Seleccione Una Opcion...</option>
+              <option value="estudiante">Estudiante</option>
+              <option value="profesor">Profesor</option>
+              <option value="organizador">Organizador</option>
+              <option value="administrador">Administrador</option>
+            </select>
+          </div>
           <div className="flex-horizontal flex-center">
             <input onChange={ev => handleUserChange({ ...userToCreate, password: ev.currentTarget.value })} value={userToCreate.password} className="field" placeholder="Contraseña" type="password" id="fname" name="fname" />
           </div>

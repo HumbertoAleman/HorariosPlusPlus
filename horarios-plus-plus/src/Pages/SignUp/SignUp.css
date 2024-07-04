@@ -25,19 +25,21 @@
   border-radius: 4px;
   padding: 10px;
   font-size: 24px;
-
   border: none;
+  width: 80%;
 }
 
 .field:invalid {
   color: red;
 }
 
-.title-white {
+.title-white-signup {
+  display: flex;
   font-weight: bold;
   color:white;
   font-size: 50px;
   margin-bottom: 2rem;
+  justify-content: center; 
 }
 
 .signup-button {
@@ -68,11 +70,25 @@ select.account-type-dropdown {
   color: black;
 
   border: none;
-  font-size: 16px;
-  padding: 1rem 0rem 1rem 1rem;
-  margin: 0rem 2rem 1rem 2rem;
+  font-size: 18px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  width: 84%;
+  border-radius: 4px;
+  color: gray;
+  font-family: Arial, Helvetica, sans-serif;
+
+
+}
+
+.dropdown-menu {
+  display: flex;
+  justify-content: center;
+
+
 }
 
 select.account-type-dropdown > option{
-  background: red;
+  background: rgb(255, 255, 255);
+  font-family: Arial, Helvetica, sans-serif;
 }

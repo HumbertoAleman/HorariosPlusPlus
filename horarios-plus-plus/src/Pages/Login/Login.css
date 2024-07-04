@@ -16,6 +16,9 @@
   border-radius: 4px;
 
   padding: 3rem;
+  width: 30rem;
+
+
   
 }
 
@@ -26,12 +29,16 @@
   border-radius: 4px;
   padding: 10px;
   font-size: 24px;
+  width: 80%;
 }
 
-.title-white {
+.title-white-login {
+  display: flex;
   color:white;
   font-size: 50px;
   margin-bottom: 2rem;
+  justify-content: center;
+  width: 100%;
 }
 
 .login-button {

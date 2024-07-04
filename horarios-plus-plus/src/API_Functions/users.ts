@@ -20,6 +20,20 @@ const newUser = async (userData : IUser): Promise<any> => {
         })
 }
 
+const getUserByEmail = async (email: string): Promise<any> => {
+    const endPointFunction = "getUser"
+    const request = createRequest([
+        { name: "email", value: email }
+    ])
+
+    return fetch(httpString + apiEndpoint + endPointFunction + request, headers)
+        .then(response => response.json())
+        .then(async data => {
+            console.log(data)
+            return data
+        })
+}
+
 const getAllUsers = async (): Promise<any> => {
     const endPointFunction = "getUser"
     const request = createRequest([])
@@ -63,4 +77,4 @@ const deleteUser = async (user: IUser): Promise<any> => {
         })
 }
 
-export { newUser, getAllUsers, updateUser, deleteUser }
+export { newUser, getAllUsers, getUserByEmail, updateUser, deleteUser }
