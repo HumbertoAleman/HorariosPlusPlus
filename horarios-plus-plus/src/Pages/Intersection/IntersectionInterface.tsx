@@ -1,4 +1,4 @@
-import "./Intersection.css"
+import "./IntersectionStyle.css"
 
 import React from "react"
 import SplitLayout from "../../Layouts/Split/SplitLayout.tsx"
@@ -8,7 +8,7 @@ import { getAllEvents } from "../../API_Functions/events.ts"
 
 import ISchedule from "../../CommonComponents/Interfaces/ISchedule.ts"
 import { getFromUser } from "../../API_Functions/schedules.ts"
-import ScheduleComponent from "../../CommonComponents/ScheduleComponent/ScheduleComponent.tsx"
+import ScheduleComponent from "../../CommonComponents/Schedule Viewer/ScheduleViewer.tsx"
 
 export default function Intersection() {
   const [loadedEvents, setLoadedEvents] = React.useState<IEvent[]>([])

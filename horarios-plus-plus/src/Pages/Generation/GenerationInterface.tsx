@@ -1,8 +1,8 @@
-import "./Generation.css";
+import "./GenerationStyle.css";
 
 import React from "react";
 import SplitLayout from "../../Layouts/Split/SplitLayout.tsx";
-import ScheduleComponent from "../../CommonComponents/ScheduleComponent/ScheduleComponent.tsx";
+import ScheduleComponent from "../../CommonComponents/Schedule Viewer/ScheduleViewer.tsx";
 
 import { getSubject } from "../../API_Functions/subjects.ts";
 import { assignSchedules, generateSchedules } from "../../API_Functions/schedules.ts";

@@ -3,16 +3,16 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import reportWebVitals from './reportWebVitals.js';
 
-import LandingInterface from './Pages/Landing/Landing.tsx';
-import GenerationInterface from './Pages/Generation/Generation.tsx';
-import CoursesInterface from './Pages/Courses/Courses.tsx';
-import LoginInterface from './Pages/Login/Login.tsx';
-import SignUpInterface from './Pages/SignUp/SignUp.tsx';
-import MySchedule from "./Pages/MySchedule/MySchedule.tsx"
+import LandingInterface from './Pages/Landing/LandingPage.tsx';
+import GenerationInterface from './Pages/Generation/GenerationInterface.tsx';
+import CoursesInterface from './Pages/Courses Sections/CoursesSectionsInterface.tsx';
+import LoginInterface from './Pages/Login/LoginInterface.tsx';
+import SignUpInterface from './Pages/SignUp/SignUpInterface.tsx';
+import MySchedule from "./Pages/My Schedule/MyScheduleInterface.tsx"
 import NotFoundInterface from "./Pages/404/NotFoundInterface.tsx"
-import Event from './Pages/Events/Events.tsx';
-import Permissions from './Pages/Permissions/Permissions.tsx';
-import Intersection from './Pages/Intersection/Intersection.tsx';
+import Event from './Pages/Events/EventsInterface.tsx';
+import Permissions from './Pages/User Permissions/UserPermissionsInterface.tsx';
+import Intersection from './Pages/Intersection/IntersectionInterface.tsx';
 
 import { BrowserRouter, Route, Routes } from 'react-router-dom';
 

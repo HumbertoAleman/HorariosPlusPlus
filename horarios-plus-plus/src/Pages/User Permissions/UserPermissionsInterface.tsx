@@ -1,4 +1,4 @@
-import "./Permissions.css"
+import "./UserPermissionsStyle.css"
 
 import React from "react"
 import SplitLayout from "../../Layouts/Split/SplitLayout.tsx"

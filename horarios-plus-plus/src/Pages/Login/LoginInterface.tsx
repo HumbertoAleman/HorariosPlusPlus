@@ -1,4 +1,4 @@
-import "./Login.css";
+import "./LoginStyle.css";
 
 import React from "react";
 import SingleLayout from "../../Layouts/Single/SingleLayout.tsx";

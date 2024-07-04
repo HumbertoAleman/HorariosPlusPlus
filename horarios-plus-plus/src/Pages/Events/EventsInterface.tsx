@@ -1,4 +1,4 @@
-import "./Events.css"
+import "./EventsStyle.css"
 
 import React from "react"
 import SplitLayout from "../../Layouts/Split/SplitLayout.tsx"

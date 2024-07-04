@@ -1,6 +1,6 @@
 import React from "react"
 import "./NavBar.css";
-import Login from "../../Pages/Login/Login";
+import Login from "../../Pages/Login/LoginInterface";
 
 export default function NavBar() {
   const isUserStudent = sessionStorage.getItem("activePermissionLevel") === "estudiante"

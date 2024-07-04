@@ -1,7 +1,7 @@
 import React from "react"
 import NavBar from "../../CommonComponents/NavBar/NavBar.tsx";
 import SingleLayout from "../../Layouts/Single/SingleLayout.tsx"
-import ScheduleComponent from "../../CommonComponents/ScheduleComponent/ScheduleComponent.tsx"
+import ScheduleComponent from "../../CommonComponents/Schedule Viewer/ScheduleViewer.tsx"
 
 import ISchedule from "../../CommonComponents/Interfaces/ISchedule.ts"
 import ISubject from "../../CommonComponents/Interfaces/ISubject.ts"

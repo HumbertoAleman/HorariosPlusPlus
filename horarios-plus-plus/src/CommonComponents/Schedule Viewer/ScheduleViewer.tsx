@@ -1,4 +1,4 @@
-import "./ScheduleComponent.css"
+import "./ScheduleViewerStyle.css"
 
 import React from "react"
 import ISchedule from "../Interfaces/ISchedule.ts"

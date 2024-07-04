@@ -1,7 +1,7 @@
 import React from "react";
 import NavBar from "../../CommonComponents/NavBar/NavBar.tsx";
 
-import "./Landing.css";
+import "./LandingStyle.css";
 
 export default function Landing() {
   return (

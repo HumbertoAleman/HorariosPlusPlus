@@ -1,4 +1,4 @@
-import "./Courses.css";
+import "./CoursesSectionsStyle.css";
 
 import React from "react";
 import SplitLayout from "../../Layouts/Split/SplitLayout.tsx";

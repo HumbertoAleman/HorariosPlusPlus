@@ -1,4 +1,4 @@
-import "./SingleLayout.css"
+import "./SingleLayoutStyle.css"
 
 import React from "react"
 import NavBar from "../../CommonComponents/NavBar/NavBar.tsx";

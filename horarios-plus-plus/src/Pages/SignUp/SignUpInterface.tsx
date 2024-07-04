@@ -1,4 +1,4 @@
-import "./SignUp.css";
+import "./SignUpStyle.css";
 
 import React from "react";
 import SingleLayout from "../../Layouts/Single/SingleLayout.tsx";

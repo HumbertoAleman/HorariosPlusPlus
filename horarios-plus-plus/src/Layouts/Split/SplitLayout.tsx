@@ -1,4 +1,4 @@
-import "./SplitLayout.css"
+import "./SplitLayoutStyle.css"
 
 import React from "react"
 import NavBar from "../../CommonComponents/NavBar/NavBar.tsx";
